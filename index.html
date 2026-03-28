@@ -460,6 +460,7 @@
     const ROWS = canvas.height / CELL;
     const TICK = 130;
     const MAX_INPUT_QUEUE = 3;
+    const BACKGROUND_REFRESH_MS = 100;
     const INPUT_DIRECTIONS = {
       ArrowUp:    { x: 0,  y: -1 },
       ArrowDown:  { x: 0,  y: 1 },
@@ -468,10 +469,12 @@
     };
 
     let snake, dir, inputQueue, food, score, gameLoop, gameOver;
+    let backgroundCanvas, backgroundCtx, lastBackgroundRefresh;
     let gridCanvas, gridCtx;
     let renderRaf;
 
     function init() {
+      buildBackgroundCache(true);
       buildGridCache();
       resetGameState();
       startGameLoop();
@@ -557,20 +560,36 @@
       drawGridLines(gridCtx);
     }
 
-    function drawBackground() {
-      const t    = Date.now() / 4000;
+    function buildBackgroundCache(force = false) {
+      const now = Date.now();
+      if (!force && backgroundCanvas && now - lastBackgroundRefresh < BACKGROUND_REFRESH_MS) return;
+
+      if (!backgroundCanvas) {
+        backgroundCanvas = document.createElement('canvas');
+        backgroundCanvas.width = canvas.width;
+        backgroundCanvas.height = canvas.height;
+        backgroundCtx = backgroundCanvas.getContext('2d');
+      }
+      lastBackgroundRefresh = now;
+
+      const t    = now / 4000;
       const hue1 = (t * 60) % 360;
       const hue2 = (hue1 + 120) % 360;
       const hue3 = (hue1 + 240) % 360;
-      const grad = ctx.createRadialGradient(
+      const grad = backgroundCtx.createRadialGradient(
         canvas.width * 0.5, canvas.height * 0.4, 0,
         canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.8
       );
       grad.addColorStop(0,   `hsl(${hue1}, 40%, 8%)`);
       grad.addColorStop(0.5, `hsl(${hue2}, 50%, 6%)`);
       grad.addColorStop(1,   `hsl(${hue3}, 60%, 4%)`);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      backgroundCtx.fillStyle = grad;
+      backgroundCtx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawBackground() {
+      buildBackgroundCache();
+      ctx.drawImage(backgroundCanvas, 0, 0);
     }
 
     function drawGridLines(targetCtx) {
