@@ -468,9 +468,11 @@
     };
 
     let snake, dir, inputQueue, food, score, gameLoop, gameOver;
+    let gridCanvas, gridCtx;
     let renderRaf;
 
     function init() {
+      buildGridCache();
       resetGameState();
       startGameLoop();
       startRenderLoop();
@@ -547,6 +549,14 @@
       })();
     }
 
+    function buildGridCache() {
+      gridCanvas = document.createElement('canvas');
+      gridCanvas.width = canvas.width;
+      gridCanvas.height = canvas.height;
+      gridCtx = gridCanvas.getContext('2d');
+      drawGridLines(gridCtx);
+    }
+
     function drawBackground() {
       const t    = Date.now() / 4000;
       const hue1 = (t * 60) % 360;
@@ -563,15 +573,26 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      ctx.lineWidth   = 0.5;
+    function drawGridLines(targetCtx) {
+      targetCtx.strokeStyle = 'rgba(255,255,255,0.03)';
+      targetCtx.lineWidth   = 0.5;
       for (let x = 0; x <= canvas.width;  x += CELL) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        targetCtx.beginPath();
+        targetCtx.moveTo(x, 0);
+        targetCtx.lineTo(x, canvas.height);
+        targetCtx.stroke();
       }
       for (let y = 0; y <= canvas.height; y += CELL) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, y);
+        targetCtx.lineTo(canvas.width, y);
+        targetCtx.stroke();
       }
+    }
+
+    function drawGrid() {
+      if (!gridCanvas) buildGridCache();
+      ctx.drawImage(gridCanvas, 0, 0);
     }
 
     function drawGameObjects() {

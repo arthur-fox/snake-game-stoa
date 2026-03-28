@@ -28,6 +28,8 @@ the current single-file game implementation.
 - Completed manual gameplay verification after the implementation changes.
 - Marked `input-responsiveness-v1` as complete in the planning and analysis
   documents.
+- Began `rendering-performance-v1` by caching the static grid and replacing
+  per-frame line-by-line grid drawing with a cached image draw.
 
 ### Notes
 
@@ -42,6 +44,8 @@ the current single-file game implementation.
   state, while the render loop is responsible for drawing frames.
 - Expensive per-frame rendering remains intentionally unoptimized in this
   iteration because it was treated as secondary to the input-path fixes.
+- The first rendering-performance step targets a low-risk optimization with no
+  intended gameplay or visual behavior change.
 
 ### Git / GitHub Context
 
