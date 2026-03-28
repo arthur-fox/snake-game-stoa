@@ -126,3 +126,89 @@ The likely lower-priority work is:
 
 - deep visual simplification of snake and food rendering
 - broader architectural refactors before evidence justifies them
+
+## Prioritized Recommendations
+
+Based on the current render path in
+[`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html), the current
+priorities are:
+
+### Priority 1: Cache or pre-render the static grid
+
+Reasoning:
+
+- The grid is fully static.
+- It is currently redrawn line-by-line on every rendered frame.
+- This has low implementation complexity and clear likely benefit.
+
+Assessment:
+
+- Expected impact: high
+- Implementation cost: low
+- Risk: low
+
+### Priority 2: Reduce background recomputation frequency
+
+Reasoning:
+
+- The background gradient is recalculated every frame with
+  `createRadialGradient`.
+- The effect is visually smooth, but it likely does not need full-frame-rate
+  recomputation to preserve its look.
+- A lower update cadence or cached intermediate background state may reduce
+  cost without changing gameplay.
+
+Assessment:
+
+- Expected impact: medium to high
+- Implementation cost: low to medium
+- Risk: low to medium
+
+### Priority 3: Separate static, semi-static, and tick-driven drawing
+
+Reasoning:
+
+- Gameplay objects change only on the fixed tick.
+- Background animation and gameplay object rendering currently share one render
+  path.
+- Further gains may come from treating static, animated, and gameplay-driven
+  layers differently.
+
+Assessment:
+
+- Expected impact: medium
+- Implementation cost: medium
+- Risk: medium
+
+### Priority 4: Simplify visual effects only if needed
+
+Reasoning:
+
+- Shadows, rounded rectangles, and glow effects add draw cost.
+- However, these effects are part of the current visual style.
+- They should not be the first target unless simpler optimizations prove
+  insufficient.
+
+Assessment:
+
+- Expected impact: low to medium
+- Implementation cost: low
+- Risk: medium, because visual regressions are more likely
+
+## Recommended Implementation Order
+
+The best order for a follow-up implementation pass is:
+
+1. Cache the grid.
+2. Reduce the frequency of animated background recomputation.
+3. Reassess whether gameplay objects need full render-loop redraws.
+4. Touch visual simplifications only if the earlier steps are not enough.
+
+## Conclusion
+
+`rendering-performance-v1` appears worth pursuing, but it should stay narrow.
+
+The most pragmatic next pass is not a broad rendering rewrite. It is a focused
+optimization pass that starts with static grid caching and background update
+reduction, because those changes offer the best likely return for the least
+added complexity.
