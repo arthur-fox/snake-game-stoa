@@ -547,7 +547,7 @@
       cancelAnimationFrame(renderRaf);
       (function loop() {
         if (gameOver) return;
-        draw();
+        renderFrame();
         renderRaf = requestAnimationFrame(loop);
       })();
     }
@@ -587,7 +587,7 @@
       backgroundCtx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function drawBackground() {
+    function drawAnimatedBackgroundLayer() {
       buildBackgroundCache();
       ctx.drawImage(backgroundCanvas, 0, 0);
     }
@@ -609,12 +609,12 @@
       }
     }
 
-    function drawGrid() {
+    function drawStaticGridLayer() {
       if (!gridCanvas) buildGridCache();
       ctx.drawImage(gridCanvas, 0, 0);
     }
 
-    function drawGameObjects() {
+    function drawGameplayLayer() {
       if (!food) return;
       // Food
       ctx.shadowColor = '#ff4136'; ctx.shadowBlur = 14; ctx.fillStyle = '#ff4136';
@@ -645,16 +645,24 @@
       return                  [[cx - o, cy + 4], [cx + o, cy + 4]];
     }
 
-    function draw() {
-      drawBackground();
-      drawGrid();
-      drawGameObjects();
+    function drawCachedLayers() {
+      drawAnimatedBackgroundLayer();
+      drawStaticGridLayer();
+    }
+
+    function drawDynamicLayers() {
+      drawGameplayLayer();
+    }
+
+    function renderFrame() {
+      drawCachedLayers();
+      drawDynamicLayers();
     }
 
     async function endGame() {
       stopGameLoop();
       gameOver = true;
-      draw();
+      renderFrame();
 
       await submitScore(score);
 

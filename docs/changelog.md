@@ -32,6 +32,8 @@ the current single-file game implementation.
   per-frame line-by-line grid drawing with a cached image draw.
 - Reduced animated background recomputation frequency by caching the gradient
   background and refreshing it on a lower cadence.
+- Clarified the render path by separating cached, animated, and gameplay-driven
+  layer responsibilities in [`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html).
 
 ### Notes
 
@@ -50,6 +52,8 @@ the current single-file game implementation.
   intended gameplay or visual behavior change.
 - The second rendering-performance step keeps the animated background effect
   while avoiding full gradient recomputation on every render frame.
+- The third rendering-performance step is mainly structural: it makes the
+  render flow easier to reason about before further optimization decisions.
 
 ### Git / GitHub Context
 
