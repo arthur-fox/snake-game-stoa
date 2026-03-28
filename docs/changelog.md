@@ -17,6 +17,11 @@ the current single-file game implementation.
   to separate responsibilities more clearly into:
   input handling, game-state helpers, simulation helpers, and rendering helpers.
 - Kept the existing fixed-tick model and single-file setup unchanged in behavior.
+- Replaced the single buffered `nextDir` approach with a bounded FIFO input
+  queue in [`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html).
+- Updated input validation to compare against the effective future direction
+  rather than only the current active direction.
+- Limited tick processing to consume at most one queued direction per update.
 
 ### Notes
 
@@ -25,6 +30,8 @@ the current single-file game implementation.
   queue.
 - No free, frame-based movement was introduced.
 - No multiplayer logic was added in this step.
+- Movement remains fixed-tick. This change improves buffering behavior without
+  changing the core timing model.
 
 ### Git / GitHub Context
 

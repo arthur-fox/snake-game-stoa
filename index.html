@@ -459,6 +459,7 @@
     const COLS = canvas.width  / CELL;
     const ROWS = canvas.height / CELL;
     const TICK = 130;
+    const MAX_INPUT_QUEUE = 3;
     const INPUT_DIRECTIONS = {
       ArrowUp:    { x: 0,  y: -1 },
       ArrowDown:  { x: 0,  y: 1 },
@@ -466,7 +467,7 @@
       ArrowRight: { x: 1,  y: 0 }
     };
 
-    let snake, dir, nextDir, food, score, gameLoop, gameOver;
+    let snake, dir, inputQueue, food, score, gameLoop, gameOver;
     let bgRaf;
 
     function init() {
@@ -479,7 +480,7 @@
     function resetGameState() {
       snake    = [{ x: 15, y: 15 }, { x: 14, y: 15 }, { x: 13, y: 15 }];
       dir      = { x: 1, y: 0 };
-      nextDir  = { x: 1, y: 0 };
+      inputQueue = [];
       score    = 0;
       gameOver = false;
       scoreEl.textContent = '0';
@@ -517,8 +518,13 @@
       return snake.some(s => s.x === pos.x && s.y === pos.y);
     }
 
+    function consumeQueuedDirection() {
+      if (!inputQueue.length) return;
+      dir = inputQueue.shift();
+    }
+
     function tick() {
-      dir = nextDir;
+      consumeQueuedDirection();
       const head = getNextHead();
       if (isOutOfBounds(head) || hitsSnake(head)) { endGame(); return; }
       snake.unshift(head);
@@ -644,13 +650,30 @@
       return INPUT_DIRECTIONS[key];
     }
 
-    function isValidNextDirection(direction) {
-      return direction.x !== -dir.x || direction.y !== -dir.y;
+    function isSameDirection(a, b) {
+      return a.x === b.x && a.y === b.y;
+    }
+
+    function getEffectiveDirection() {
+      return inputQueue[inputQueue.length - 1] || dir;
+    }
+
+    function isValidQueuedDirection(direction) {
+      const effectiveDirection = getEffectiveDirection();
+      if (isSameDirection(direction, effectiveDirection)) return false;
+      return direction.x !== -effectiveDirection.x || direction.y !== -effectiveDirection.y;
+    }
+
+    function enqueueDirection(direction) {
+      if (inputQueue.length >= MAX_INPUT_QUEUE) return false;
+      if (!isValidQueuedDirection(direction)) return false;
+      inputQueue.push(direction);
+      return true;
     }
 
     function handleDirectionInput(key) {
       const direction = getDirectionFromKey(key);
-      if (direction && isValidNextDirection(direction)) nextDir = direction;
+      if (direction) enqueueDirection(direction);
       return Boolean(direction);
     }
 
