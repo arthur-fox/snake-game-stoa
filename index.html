@@ -141,6 +141,12 @@
     }
     #logout-btn:hover { color: #fff; border-color: #666; }
 
+    #columns {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
     #game-col {
       display: flex;
       flex-direction: column;
@@ -170,16 +176,13 @@
 
     /* ── Leaderboard Panel ── */
     #lb-panel {
-      position: fixed;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
       width: 200px;
       background: #0d0d1a;
       border: 1px solid #2a2a3a;
       border-radius: 8px;
       padding: 16px;
       box-shadow: 0 0 20px rgba(57,255,20,0.05);
+      margin-top: 131px;
     }
 
     #lb-panel h3 {
@@ -262,21 +265,23 @@
     </div>
   </div>
 
-  <div id="game-col">
-    <h1>Snake</h1>
-    <div id="user-bar">
-      <span>Playing as <strong id="username-display"></strong></span>
-      <button id="logout-btn">Logout</button>
+  <div id="columns">
+    <div id="game-col">
+      <h1>Snake</h1>
+      <div id="user-bar">
+        <span>Playing as <strong id="username-display"></strong></span>
+        <button id="logout-btn">Logout</button>
+      </div>
+      <div id="score-display">Score: <span id="score-val">0</span></div>
+      <canvas id="c" width="600" height="600"></canvas>
+      <div id="hint">Arrow keys to move</div>
     </div>
-    <div id="score-display">Score: <span id="score-val">0</span></div>
-    <canvas id="c" width="600" height="600"></canvas>
-    <div id="hint">Arrow keys to move</div>
-  </div>
-  <div id="lb-panel">
-    <h3>Leaderboard</h3>
-    <ul id="leaderboard-list">
-      <li id="lb-status">Loading…</li>
-    </ul>
+    <div id="lb-panel">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard-list">
+        <li id="lb-status">Loading…</li>
+      </ul>
+    </div>
   </div>
 
   <script>
