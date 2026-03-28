@@ -212,3 +212,10 @@ The most pragmatic next pass is not a broad rendering rewrite. It is a focused
 optimization pass that starts with static grid caching and background update
 reduction, because those changes offer the best likely return for the least
 added complexity.
+
+Status after `rendering-performance-v1`:
+
+- The prioritized low-risk optimizations were implemented.
+- Manual gameplay verification was reported as clean.
+- Visual-effect simplification remains intentionally deferred rather than
+  required for closing this iteration.

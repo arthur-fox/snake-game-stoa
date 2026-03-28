@@ -10,9 +10,9 @@ the current single-file game implementation.
 ### Content Changes
 
 - Added input-responsiveness planning and analysis documents under
-  [`docs/input-responsiveness-v1`](/home/dev_hub/projects/snake-game-stoa/docs/input-responsiveness-v1).
+  [`docs/input-responsiveness-v1_closed`](/home/dev_hub/projects/snake-game-stoa/docs/input-responsiveness-v1_closed).
 - Added a multiplayer outlook document under
-  [`docs/multiplayer`](/home/dev_hub/projects/snake-game-stoa/docs/multiplayer).
+  [`docs/multiplayer-v1`](/home/dev_hub/projects/snake-game-stoa/docs/multiplayer-v1).
 - Refactored [`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html)
   to separate responsibilities more clearly into:
   input handling, game-state helpers, simulation helpers, and rendering helpers.
@@ -59,6 +59,15 @@ the current single-file game implementation.
   render flow easier to reason about before further optimization decisions.
 - The fourth rendering-performance step reduces repeated gameplay-object draw
   work while preserving the fixed-tick behavior.
+- Closed the `input-responsiveness-v1` and `rendering-performance-v1` plan
+  documents and moved their remaining open items into a central
+  follow-up-suggestions document.
+- Renamed the closed documentation folders to
+  [`docs/input-responsiveness-v1_closed`](/home/dev_hub/projects/snake-game-stoa/docs/input-responsiveness-v1_closed)
+  and
+  [`docs/rendering-performance-v1_closed`](/home/dev_hub/projects/snake-game-stoa/docs/rendering-performance-v1_closed).
+- Renamed `docs/multiplayer` to
+  [`docs/multiplayer-v1`](/home/dev_hub/projects/snake-game-stoa/docs/multiplayer-v1).
 
 ### Git / GitHub Context
 

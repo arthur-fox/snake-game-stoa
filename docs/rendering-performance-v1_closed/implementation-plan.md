@@ -3,7 +3,7 @@
 ## Scope
 
 This plan translates the prioritized findings from
-[`rendering-performance-analysis.md`](/home/dev_hub/projects/snake-game-stoa/docs/rendering-performance-v1/rendering-performance-analysis.md)
+[`rendering-performance-analysis.md`](/home/dev_hub/projects/snake-game-stoa/docs/rendering-performance-v1_closed/rendering-performance-analysis.md)
 into concrete implementation steps.
 
 Constraints for this iteration:
@@ -27,6 +27,24 @@ Constraints for this iteration:
 - No multiplayer-related rendering changes.
 - No multi-file rendering architecture refactor.
 - No visual redesign.
+
+## Status
+
+`rendering-performance-v1` is complete and closed.
+
+Completed in this iteration:
+
+- static grid caching
+- lower-frequency animated background recomputation
+- clearer separation of cached, animated, and gameplay-driven render layers
+- gameplay-layer caching between state changes
+- manual gameplay verification
+
+Intentionally left for later:
+
+- visual-effect simplification such as shadows, glow, or shape adjustments,
+  because the manual test was clean and there is no current need to trade away
+  visuals for additional optimization
 
 ## Implementation Steps
 

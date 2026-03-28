@@ -31,7 +31,7 @@ Constraints for this iteration:
 
 ## Status
 
-`input-responsiveness-v1` is complete.
+`input-responsiveness-v1` is complete and closed.
 
 Completed in this iteration:
 
