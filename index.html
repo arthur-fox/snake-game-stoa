@@ -375,7 +375,7 @@
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
       clearInterval(gameLoop);
-      cancelAnimationFrame(bgRaf);
+      cancelAnimationFrame(renderRaf);
       await sb.auth.signOut();
       currentUser = null;
       // Reset auth modal
@@ -468,12 +468,12 @@
     };
 
     let snake, dir, inputQueue, food, score, gameLoop, gameOver;
-    let bgRaf;
+    let renderRaf;
 
     function init() {
       resetGameState();
       startGameLoop();
-      startBgLoop();
+      startRenderLoop();
     }
 
     // ── Game State ───────────────────────────────────────────
@@ -494,7 +494,7 @@
 
     function stopGameLoop() {
       clearInterval(gameLoop);
-      cancelAnimationFrame(bgRaf);
+      cancelAnimationFrame(renderRaf);
     }
 
     function spawnFood() {
@@ -535,16 +535,15 @@
       } else {
         snake.pop();
       }
-      draw();
     }
 
     // ── Rendering ─────────────────────────────────────────────
-    function startBgLoop() {
-      cancelAnimationFrame(bgRaf);
+    function startRenderLoop() {
+      cancelAnimationFrame(renderRaf);
       (function loop() {
         if (gameOver) return;
         draw();
-        bgRaf = requestAnimationFrame(loop);
+        renderRaf = requestAnimationFrame(loop);
       })();
     }
 

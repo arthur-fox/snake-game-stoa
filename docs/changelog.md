@@ -22,6 +22,9 @@ the current single-file game implementation.
 - Updated input validation to compare against the effective future direction
   rather than only the current active direction.
 - Limited tick processing to consume at most one queued direction per update.
+- Removed the redundant `draw()` call from the fixed tick path.
+- Kept rendering in a single `requestAnimationFrame`-driven render loop and
+  renamed that loop for clarity.
 
 ### Notes
 
@@ -32,6 +35,8 @@ the current single-file game implementation.
 - No multiplayer logic was added in this step.
 - Movement remains fixed-tick. This change improves buffering behavior without
   changing the core timing model.
+- Simulation and rendering now have a cleaner separation: the tick updates game
+  state, while the render loop is responsible for drawing frames.
 
 ### Git / GitHub Context
 
