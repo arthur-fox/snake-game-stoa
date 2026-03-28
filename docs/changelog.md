@@ -34,6 +34,9 @@ the current single-file game implementation.
   background and refreshing it on a lower cadence.
 - Clarified the render path by separating cached, animated, and gameplay-driven
   layer responsibilities in [`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html).
+- Updated gameplay rendering so snake and food are redrawn into a cached
+  gameplay layer only when game state changes, instead of on every render
+  frame.
 
 ### Notes
 
@@ -54,6 +57,8 @@ the current single-file game implementation.
   while avoiding full gradient recomputation on every render frame.
 - The third rendering-performance step is mainly structural: it makes the
   render flow easier to reason about before further optimization decisions.
+- The fourth rendering-performance step reduces repeated gameplay-object draw
+  work while preserving the fixed-tick behavior.
 
 ### Git / GitHub Context
 

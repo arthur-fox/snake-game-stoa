@@ -470,11 +470,13 @@
 
     let snake, dir, inputQueue, food, score, gameLoop, gameOver;
     let backgroundCanvas, backgroundCtx, lastBackgroundRefresh;
+    let gameplayCanvas, gameplayCtx, gameplayLayerDirty;
     let gridCanvas, gridCtx;
     let renderRaf;
 
     function init() {
       buildBackgroundCache(true);
+      buildGameplayLayerCache();
       buildGridCache();
       resetGameState();
       startGameLoop();
@@ -488,6 +490,7 @@
       inputQueue = [];
       score    = 0;
       gameOver = false;
+      gameplayLayerDirty = true;
       scoreEl.textContent = '0';
       spawnFood();
     }
@@ -540,6 +543,7 @@
       } else {
         snake.pop();
       }
+      gameplayLayerDirty = true;
     }
 
     // ── Rendering ─────────────────────────────────────────────
@@ -558,6 +562,16 @@
       gridCanvas.height = canvas.height;
       gridCtx = gridCanvas.getContext('2d');
       drawGridLines(gridCtx);
+    }
+
+    function buildGameplayLayerCache() {
+      if (!gameplayCanvas) {
+        gameplayCanvas = document.createElement('canvas');
+        gameplayCanvas.width = canvas.width;
+        gameplayCanvas.height = canvas.height;
+        gameplayCtx = gameplayCanvas.getContext('2d');
+      }
+      gameplayLayerDirty = true;
     }
 
     function buildBackgroundCache(force = false) {
@@ -614,26 +628,40 @@
       ctx.drawImage(gridCanvas, 0, 0);
     }
 
-    function drawGameplayLayer() {
+    function drawGameplayObjects(targetCtx) {
       if (!food) return;
       // Food
-      ctx.shadowColor = '#ff4136'; ctx.shadowBlur = 14; ctx.fillStyle = '#ff4136';
+      targetCtx.shadowColor = '#ff4136';
+      targetCtx.shadowBlur = 14;
+      targetCtx.fillStyle = '#ff4136';
       const fx = food.x * CELL + 2, fy = food.y * CELL + 2, fs = CELL - 4;
-      ctx.beginPath(); ctx.arc(fx + fs / 2, fy + fs / 2, fs / 2, 0, Math.PI * 2); ctx.fill();
-      ctx.shadowBlur = 0;
+      targetCtx.beginPath();
+      targetCtx.arc(fx + fs / 2, fy + fs / 2, fs / 2, 0, Math.PI * 2);
+      targetCtx.fill();
+      targetCtx.shadowBlur = 0;
       // Snake
       snake.forEach((seg, i) => {
         const x = seg.x * CELL + 1, y = seg.y * CELL + 1, s = CELL - 2;
         const isHead = i === 0;
-        if (isHead) { ctx.shadowColor = '#39ff14'; ctx.shadowBlur = 16; ctx.fillStyle = '#39ff14'; }
-        else        { ctx.shadowBlur = 0; ctx.fillStyle = `rgb(30, ${Math.round(200 - (i / snake.length) * 90)}, 20)`; }
-        ctx.beginPath(); ctx.roundRect(x, y, s, s, isHead ? 5 : 3); ctx.fill();
+        if (isHead) {
+          targetCtx.shadowColor = '#39ff14';
+          targetCtx.shadowBlur = 16;
+          targetCtx.fillStyle = '#39ff14';
+        } else {
+          targetCtx.shadowBlur = 0;
+          targetCtx.fillStyle = `rgb(30, ${Math.round(200 - (i / snake.length) * 90)}, 20)`;
+        }
+        targetCtx.beginPath();
+        targetCtx.roundRect(x, y, s, s, isHead ? 5 : 3);
+        targetCtx.fill();
       });
-      ctx.shadowBlur = 0;
+      targetCtx.shadowBlur = 0;
       // Eyes
-      ctx.fillStyle = '#111';
+      targetCtx.fillStyle = '#111';
       getEyePositions(snake[0].x * CELL, snake[0].y * CELL, dir, 5).forEach(([ex, ey]) => {
-        ctx.beginPath(); ctx.arc(ex, ey, 2.5, 0, Math.PI * 2); ctx.fill();
+        targetCtx.beginPath();
+        targetCtx.arc(ex, ey, 2.5, 0, Math.PI * 2);
+        targetCtx.fill();
       });
     }
 
@@ -650,8 +678,16 @@
       drawStaticGridLayer();
     }
 
+    function rebuildGameplayLayer() {
+      if (!gameplayCanvas) buildGameplayLayerCache();
+      gameplayCtx.clearRect(0, 0, canvas.width, canvas.height);
+      drawGameplayObjects(gameplayCtx);
+      gameplayLayerDirty = false;
+    }
+
     function drawDynamicLayers() {
-      drawGameplayLayer();
+      if (gameplayLayerDirty) rebuildGameplayLayer();
+      ctx.drawImage(gameplayCanvas, 0, 0);
     }
 
     function renderFrame() {
