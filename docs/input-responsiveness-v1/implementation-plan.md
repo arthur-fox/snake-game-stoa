@@ -29,6 +29,24 @@ Constraints for this iteration:
 - No broad visual redesign or rendering optimization pass unless required by
   the rendering cleanup work.
 
+## Status
+
+`input-responsiveness-v1` is complete.
+
+Completed in this iteration:
+
+- structure cleanup inside [`index.html`](/home/dev_hub/projects/snake-game-stoa/index.html)
+- bounded FIFO input queue
+- validation against the effective future direction
+- deterministic consumption of one queued input per tick
+- removal of duplicate rendering triggers
+- manual gameplay verification
+
+Intentionally left for later:
+
+- deeper optimization of per-frame rendering cost, which remains a secondary
+  follow-up topic rather than part of this iteration's acceptance bar
+
 ## Implementation Steps
 
 ### 1. Stabilize the current structure inside `index.html`
@@ -137,6 +155,10 @@ Acceptance criteria:
 
 - The game feels more responsive.
 - No obvious regressions in movement, collisions, restart behavior, or drawing.
+
+Result:
+
+- Manually verified as working in local play.
 
 ## Suggested Delivery Order
 

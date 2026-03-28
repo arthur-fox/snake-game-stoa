@@ -58,6 +58,14 @@ The "non-responsive" feeling is mainly caused by input being quantized to the
 tick interval and by the lack of proper input buffering. Rendering
 inefficiencies may amplify the issue but are likely secondary.
 
+Status after `input-responsiveness-v1`:
+
+- The input-buffering and duplicate-render-trigger issues have been addressed.
+- Manual gameplay verification indicates the game remains functional and feels
+  responsive after the changes.
+- The expensive per-frame rendering point remains a secondary follow-up topic,
+  not a blocker for closing this iteration.
+
 ## Recommended Direction
 
 The first iteration should focus on the input path before touching visual
@@ -76,3 +84,6 @@ rendering:
 If the above changes are implemented, the game should feel more responsive even
 without changing the tick rate, because valid user input will be preserved and
 applied consistently instead of being overwritten or dropped.
+
+This expected outcome has been met for the current iteration, with rendering
+cost profiling intentionally deferred.

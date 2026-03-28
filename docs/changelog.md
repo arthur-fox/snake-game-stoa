@@ -25,6 +25,9 @@ the current single-file game implementation.
 - Removed the redundant `draw()` call from the fixed tick path.
 - Kept rendering in a single `requestAnimationFrame`-driven render loop and
   renamed that loop for clarity.
+- Completed manual gameplay verification after the implementation changes.
+- Marked `input-responsiveness-v1` as complete in the planning and analysis
+  documents.
 
 ### Notes
 
@@ -37,6 +40,8 @@ the current single-file game implementation.
   changing the core timing model.
 - Simulation and rendering now have a cleaner separation: the tick updates game
   state, while the render loop is responsible for drawing frames.
+- Expensive per-frame rendering remains intentionally unoptimized in this
+  iteration because it was treated as secondary to the input-path fixes.
 
 ### Git / GitHub Context
 
