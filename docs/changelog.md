@@ -7,6 +7,15 @@
 Started implementation of `input-responsiveness-v1` with a structural cleanup of
 the current single-file game implementation.
 
+### Iteration Summary
+
+- `input-responsiveness-v1` completed with improved input buffering,
+  deterministic tick consumption, and cleaner simulation/render separation.
+- `rendering-performance-v1` completed with cached grid rendering,
+  lower-frequency background recomputation, and cached gameplay-layer redraws.
+- Remaining non-blocking follow-ups were consolidated into
+  [`docs/follow-up-suggestions.md`](/home/dev_hub/projects/snake-game-stoa/docs/follow-up-suggestions.md).
+
 ### Content Changes
 
 - Added input-responsiveness planning and analysis documents under
