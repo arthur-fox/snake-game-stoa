@@ -169,6 +169,113 @@
       height: 600px;
     }
 
+    #mp-game-hud {
+      width: 220px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(8, 12, 18, 0.78);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      margin-top: 131px;
+      align-self: flex-start;
+    }
+
+    .mp-game-hud-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mp-game-hud-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+    }
+
+    #mp-match-time {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    #mp-game-players {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #mp-game-players li {
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 10px;
+      padding: 7px 8px;
+      border-radius: 7px;
+      background: rgba(255,255,255,0.04);
+      transition: opacity 0.15s ease;
+    }
+
+    #mp-game-players li.dead {
+      opacity: 0.45;
+    }
+
+    .mp-player-status {
+      width: 14px;
+      text-align: center;
+      color: #fff;
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .mp-player-status.alive {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      justify-self: center;
+    }
+
+    .mp-player-status.dead {
+      color: #ff5a5a;
+      font-size: 0.95rem;
+    }
+
+    .mp-player-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #f0f4f8;
+      font-size: 0.9rem;
+    }
+
+    .mp-player-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mp-player-meta {
+      color: rgba(255,255,255,0.56);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mp-player-time {
+      color: rgba(255,255,255,0.78);
+      font-size: 0.82rem;
+      font-variant-numeric: tabular-nums;
+    }
+
     canvas {
       display: block;
       border: 2px solid #2a2a2a;
@@ -280,6 +387,24 @@
       letter-spacing: 0.05em;
     }
 
+    .mp-entry-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff1455;
+    }
+
+    .mp-entry-subtitle {
+      font-size: 0.82rem;
+      color: #707084;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: -6px;
+      margin-bottom: 4px;
+    }
+
     .mp-btn {
       padding: 12px 0;
       background: #39ff14;
@@ -302,6 +427,54 @@
     }
     .mp-btn.secondary:hover { background: #39ff1415; }
 
+    .mp-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mp-mode-panel {
+      width: 100%;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .mp-mode-panel.solo {
+      background: linear-gradient(180deg, rgba(57,255,20,0.04), rgba(57,255,20,0.015));
+      border-color: #39ff1426;
+      align-items: center;
+    }
+
+    .mp-mode-label {
+      font-size: 0.76rem;
+      color: #8e8ea0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .mp-solo-copy {
+      font-size: 0.88rem;
+      color: #a7a7b5;
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.45;
+    }
+
+    .mp-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #2e2e44, transparent);
+      margin: 2px 0;
+    }
+
     .mp-join-row {
       display: flex;
       gap: 8px;
@@ -322,6 +495,68 @@
     }
     .mp-join-row input:focus { border-color: #39ff1488; }
     .mp-join-row .mp-btn { width: auto; padding: 10px 22px; }
+
+    .mp-room-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mp-room-list-status {
+      min-height: 18px;
+      font-size: 0.84rem;
+      color: #555;
+      text-align: center;
+    }
+
+    .mp-room-card {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      background: #151526;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .mp-room-card:hover {
+      border-color: #39ff1455;
+      box-shadow: 0 0 20px #39ff1418;
+      transform: translateY(-1px);
+    }
+
+    .mp-room-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .mp-room-code {
+      color: #39ff14;
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 0.16em;
+    }
+
+    .mp-room-meta {
+      color: #8a8a9a;
+      font-size: 0.84rem;
+    }
+
+    .mp-room-join {
+      flex-shrink: 0;
+      color: #39ff14;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
     #room-code-display {
       font-size: 1.6rem;
@@ -361,10 +596,74 @@
       flex-shrink: 0;
     }
 
+    .lobby-name {
+      flex: 1;
+      color: #ddd;
+    }
+
+    .lobby-badge {
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #39ff14;
+      border: 1px solid #39ff1433;
+      border-radius: 999px;
+      padding: 3px 7px;
+      flex-shrink: 0;
+    }
+
     #lobby-status {
       font-size: 0.85rem;
       color: #555;
       text-align: center;
+    }
+
+    .mp-lobby-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .mp-lobby-actions .mp-btn {
+      width: auto;
+      min-width: 160px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    .mp-room-option {
+      width: 100%;
+      max-width: 280px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #d7dce2;
+    }
+
+    .mp-room-option input {
+      accent-color: #39ff14;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .mp-room-option strong {
+      display: block;
+      font-size: 0.92rem;
+      color: #fff;
+    }
+
+    .mp-room-option span {
+      display: block;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.62);
+      margin-top: 2px;
     }
 
     /* ── MP End Overlay ── */
@@ -383,12 +682,18 @@
     #mp-end-overlay h2 {
       font-size: 2rem;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    #mp-end-summary {
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 10px;
+      text-align: center;
     }
     #mp-end-scores {
       list-style: none;
       width: 100%;
-      max-width: 320px;
+      max-width: 460px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -407,10 +712,10 @@
       background: rgba(57,255,20,0.1);
       border: 1px solid #39ff1433;
     }
-    .end-rank { color: #666; width: 20px; text-align: center; flex-shrink: 0; }
+    .end-rank { color: #888; width: 78px; text-align: left; flex-shrink: 0; font-size: 0.84rem; }
     .end-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .end-name { flex: 1; color: #ddd; }
-    .end-score { font-weight: bold; color: #fff; flex-shrink: 0; }
+    .end-stat { font-weight: bold; color: #fff; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -438,45 +743,80 @@
 
       <!-- Mode Selection -->
       <div id="mp-entry" style="display:none">
-        <p class="mp-heading">Choose a mode to play</p>
-        <button class="mp-btn" onclick="createRoom()">Create Room</button>
-        <div class="mp-join-row">
-          <input id="room-input" placeholder="XXXXXX" maxlength="6">
-          <button class="mp-btn" onclick="joinRoomFromInput()">Join</button>
+        <div class="mp-entry-title">Multiplayer</div>
+        <p class="mp-entry-subtitle">Create a room or join one that is already waiting</p>
+        <div class="mp-mode-panel">
+          <button class="mp-btn" onclick="createRoom()">Create Room</button>
+          <div class="mp-divider"></div>
+          <div class="mp-section">
+            <p class="mp-heading">Open rooms</p>
+            <div id="mp-room-list-status" class="mp-room-list-status">Loading rooms…</div>
+            <div id="mp-room-list" class="mp-room-list"></div>
+          </div>
         </div>
-        <button class="mp-btn secondary" onclick="startSolo()">Solo Game</button>
+        <div class="mp-mode-panel solo">
+          <div class="mp-mode-label">Solo</div>
+          <p class="mp-solo-copy">Play alone and compete for the best score on the solo leaderboard.</p>
+          <button class="mp-btn secondary" onclick="startSolo()">Solo Game</button>
+        </div>
       </div>
 
       <!-- Lobby -->
       <div id="mp-lobby" style="display:none">
-        <p class="mp-heading">Share this code with friends:</p>
+        <p class="mp-heading">Room</p>
         <div id="room-code-display"></div>
         <p class="mp-heading" style="margin-top:4px">Players in room:</p>
         <ul id="lobby-players"></ul>
-        <button id="start-btn" class="mp-btn" onclick="hostStartGame()" style="display:none">Start Game</button>
+        <div class="mp-lobby-actions">
+          <button id="start-btn" class="mp-btn" onclick="hostStartGame()" style="display:none">Start Game</button>
+          <button id="leave-btn" class="mp-btn secondary" onclick="leaveRoom()">Leave Room</button>
+        </div>
+        <label class="mp-room-option" for="corpse-mode-toggle">
+          <input id="corpse-mode-toggle" type="checkbox" onchange="handleCorpseModeToggle(event)" />
+          <div>
+            <strong>Stone corpses collide</strong>
+            <span>On: dead worms remain solid walls. Off: dead worms stay faded and visual only.</span>
+          </div>
+        </label>
+        <label class="mp-room-option" for="shooting-mode-toggle">
+          <input id="shooting-mode-toggle" type="checkbox" onchange="handleShootingModeToggle(event)" />
+          <div>
+            <strong>Shooting enabled</strong>
+            <span>Blue ammo enables shots. Fire with Space. One hit cuts tails, two head hits kill, and two hits break open stone corpses. Yellow lives restore head health up to 2/2.</span>
+          </div>
+        </label>
         <p id="lobby-status">Waiting for host to start…</p>
       </div>
 
       <!-- Canvas area -->
       <div id="canvas-wrap" style="display:none">
-        <canvas id="c" width="600" height="600"></canvas>
+        <canvas id="c" width="600" height="600" tabindex="0"></canvas>
         <div id="mp-end-overlay">
-          <h2>Game Over</h2>
+          <h2 id="mp-end-title">Game Over</h2>
+          <p id="mp-end-summary"></p>
           <ul id="mp-end-scores"></ul>
-          <button class="mp-btn" onclick="leaveRoom()">Leave Room</button>
+          <button class="mp-btn" onclick="leaveRoom()">Main Menu</button>
         </div>
       </div>
-
-      <div id="hint" style="display:none">Arrow keys to move</div>
+      <div id="hint" style="display:none">Arrow keys or WASD to move</div>
+    </div>
+    <div id="mp-game-hud">
+      <div class="mp-game-hud-head">
+        <span class="mp-game-hud-label">Match Time</span>
+        <strong id="mp-match-time">0:00</strong>
+      </div>
+      <ul id="mp-game-players"></ul>
     </div>
     <div id="lb-panel">
-      <h3>Leaderboard</h3>
+      <h3>Solo Leaderboard</h3>
       <ul id="leaderboard-list">
         <li id="lb-status">Loading…</li>
       </ul>
     </div>
   </div>
 
+  <script src="multiplayer-session.js"></script>
+  <script src="multiplayer-lobby.js"></script>
   <script>
     // ── Supabase ──────────────────────────────────────────────
     const SUPABASE_URL = 'https://nsvienlugithpmehukjt.supabase.co';
@@ -554,13 +894,15 @@
         id:       data.user.id,
         username: data.user.user_metadata?.username || username,
       };
-      showGame();
+      await showGame();
     }
 
-    function showGame() {
+    async function showGame() {
       authModal.classList.add('hidden');
       document.getElementById('username-display').textContent = currentUser.username;
       fetchLeaderboard();
+      roomStage = 'browse';
+      await ensureLobbyChannel();
       showMpEntry();
     }
 
@@ -571,6 +913,12 @@
         mpChannel = null;
       }
       multiplayerMode = false;
+      roomId = null;
+      roomStage = 'browse';
+      isHost = false;
+      clearCurrentMatchSnapshot();
+      resetCombatState();
+      await disconnectLobbyChannel();
       spectating = false;
       await sb.auth.signOut();
       currentUser = null;
@@ -641,43 +989,14 @@
           id:       session.user.id,
           username: session.user.user_metadata?.username || 'Player',
         };
-        showGame();
+        await showGame();
       }
     }
 
     // ── Multiplayer State ─────────────────────────────────────
-    const PLAYER_COLORS = ['#39ff14', '#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF'];
-
-    let multiplayerMode = false;
-    let roomId    = null;
-    let mpChannel = null;
-    let isHost    = false;
-    let peers     = new Map();      // username → { snake, score, color, dead }
-    let deadPlayers = new Set();
-    let myColor   = PLAYER_COLORS[0];
-    let spectating = false;
-
-    // ── Multiplayer UI Helpers ────────────────────────────────
-    function showNothing() {
-      document.getElementById('mp-entry').style.display    = 'none';
-      document.getElementById('mp-lobby').style.display    = 'none';
-      document.getElementById('canvas-wrap').style.display = 'none';
-      document.getElementById('score-display').style.display = 'none';
-      document.getElementById('hint').style.display        = 'none';
-    }
-
-    function showMpEntry() {
-      showNothing();
-      document.getElementById('mp-entry').style.display = 'flex';
-    }
-
-    function showLobby() {
-      showNothing();
-      document.getElementById('mp-lobby').style.display = 'flex';
-      document.getElementById('room-code-display').textContent = roomId;
-      document.getElementById('start-btn').style.display   = isHost ? 'block' : 'none';
-      document.getElementById('lobby-status').style.display = isHost ? 'none' : 'block';
-    }
+    let lobbyChannel = null;
+    let lobbyChannelReady = false;
+    let lobbyChannelError = null;
 
     function showCanvas() {
       document.getElementById('mp-entry').style.display    = 'none';
@@ -685,188 +1004,20 @@
       document.getElementById('canvas-wrap').style.display = 'block';
       document.getElementById('score-display').style.display = '';
       document.getElementById('hint').style.display        = '';
+      updateGameplayHint();
+      focusGameplaySurface();
     }
 
-    // ── Multiplayer Channel ───────────────────────────────────
-    async function createRoom() {
-      const id = Math.random().toString(36).substr(2, 6).toUpperCase();
-      await joinChannel(id, true);
+    function updateGameplayHint() {
+      const hintEl = document.getElementById('hint');
+      if (!hintEl) return;
+      hintEl.textContent = multiplayerMode && isShootingEnabled()
+        ? 'Arrow keys or WASD to move · Space to shoot'
+        : 'Arrow keys or WASD to move';
     }
 
-    async function joinRoomFromInput() {
-      const raw = document.getElementById('room-input').value.trim().toUpperCase();
-      if (!raw) return;
-      await joinChannel(raw, false);
-    }
-
-    function startSolo() {
-      multiplayerMode = false;
-      showCanvas();
-      init();
-    }
-
-    async function joinChannel(id, hosting) {
-      roomId = id;
-      isHost = hosting;
-      multiplayerMode = true;
-      peers.clear();
-      deadPlayers.clear();
-
-      mpChannel = sb.channel('snake:room-' + id, {
-        config: {
-          broadcast: { self: false },
-          presence:  { key: currentUser.username },
-        }
-      });
-
-      mpChannel
-        .on('presence', { event: 'sync' }, updateLobbyList)
-        .on('broadcast', { event: 'snake:state' }, ({ payload }) => updatePeer(payload))
-        .on('broadcast', { event: 'game:start' }, () => startCountdown())
-        .on('broadcast', { event: 'player:dead' }, ({ payload }) => {
-          deadPlayers.add(payload.id);
-          const p = peers.get(payload.id);
-          if (p) { p.dead = true; p.score = payload.score; }
-          checkAllDead();
-        })
-        .subscribe(async (status) => {
-          if (status !== 'SUBSCRIBED') return;
-          const state = mpChannel.presenceState();
-          const count = Object.keys(state).length;
-          myColor = PLAYER_COLORS[count % PLAYER_COLORS.length];
-          await mpChannel.track({ username: currentUser.username, color: myColor });
-          showLobby();
-        });
-    }
-
-    function updateLobbyList() {
-      const state = mpChannel.presenceState();
-      const list  = document.getElementById('lobby-players');
-      list.innerHTML = '';
-      Object.values(state).forEach(presences => {
-        presences.forEach(p => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span class="lobby-dot" style="background:${escHtml(p.color || '#fff')}"></span>${escHtml(p.username || '?')}`;
-          list.appendChild(li);
-        });
-      });
-    }
-
-    function updatePeer(payload) {
-      const existing = peers.get(payload.id) || {};
-      peers.set(payload.id, {
-        snake: payload.snake,
-        score: payload.score,
-        color: payload.color,
-        dead:  existing.dead || false,
-      });
-      gameplayLayerDirty = true;
-    }
-
-    function hostStartGame() {
-      mpChannel.send({ type: 'broadcast', event: 'game:start', payload: {} });
-      startCountdown();
-    }
-
-    function startCountdown() {
-      showCanvas();
-      peers.clear();
-      deadPlayers.clear();
-      let count = 3;
-
-      function drawCount(n) {
-        buildBackgroundCache(true);
-        ctx.drawImage(backgroundCanvas, 0, 0);
-        ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font         = 'bold 120px system-ui';
-        ctx.fillStyle    = '#39ff14';
-        ctx.shadowColor  = '#39ff14';
-        ctx.shadowBlur   = 40;
-        ctx.fillText(n > 0 ? String(n) : 'GO!', canvas.width / 2, canvas.height / 2);
-        ctx.shadowBlur   = 0;
-        ctx.textBaseline = 'alphabetic';
-      }
-
-      drawCount(count);
-      const timer = setInterval(() => {
-        count--;
-        if (count > 0) {
-          drawCount(count);
-        } else if (count === 0) {
-          drawCount(0);
-        } else {
-          clearInterval(timer);
-          init();
-        }
-      }, 1000);
-    }
-
-    function broadcastSnakeState() {
-      if (!mpChannel) return;
-      mpChannel.send({
-        type: 'broadcast',
-        event: 'snake:state',
-        payload: { id: currentUser.username, snake, score, color: myColor },
-      });
-    }
-
-    function checkAllDead() {
-      const total = peers.size + 1;
-      if (deadPlayers.size >= total) {
-        spectating = false;
-        stopRenderer();
-        showMultiplayerEndScreen();
-      }
-    }
-
-    function showMultiplayerEndScreen() {
-      const results = [{ username: currentUser.username, score, color: myColor }];
-      peers.forEach((peer, username) => {
-        results.push({ username, score: peer.score || 0, color: peer.color || '#ccc' });
-      });
-      results.sort((a, b) => b.score - a.score);
-
-      const ul = document.getElementById('mp-end-scores');
-      ul.innerHTML = '';
-      results.forEach((r, i) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span class="end-rank">${i + 1}</span>
-          <span class="end-dot" style="background:${escHtml(r.color)}"></span>
-          <span class="end-name">${escHtml(r.username)}</span>
-          <span class="end-score">${r.score}</span>
-        `;
-        ul.appendChild(li);
-      });
-      document.getElementById('mp-end-overlay').style.display = 'flex';
-      submitScore(score);
-    }
-
-    async function leaveRoom() {
-      spectating = false;
-      gameOver = true;
-      stopGameLoop();
-      document.getElementById('mp-end-overlay').style.display = 'none';
-      if (mpChannel) {
-        try { await mpChannel.unsubscribe(); } catch(e) {}
-        mpChannel = null;
-      }
-      multiplayerMode = false;
-      roomId = null;
-      isHost = false;
-      peers.clear();
-      deadPlayers.clear();
-      showMpEntry();
-    }
-
-    function hexToRgba(hex, alpha) {
-      const r = parseInt(hex.slice(1,3), 16);
-      const g = parseInt(hex.slice(3,5), 16);
-      const b = parseInt(hex.slice(5,7), 16);
-      return `rgba(${r},${g},${b},${alpha})`;
+    function setSoloLeaderboardVisible(visible) {
+      document.getElementById('lb-panel').style.display = visible ? 'block' : 'none';
     }
 
     // ── Game ──────────────────────────────────────────────────
@@ -878,20 +1029,32 @@
     const COLS = canvas.width  / CELL;
     const ROWS = canvas.height / CELL;
     const TICK = 130;
-    const MAX_INPUT_QUEUE = 3;
+    const MAX_INPUT_QUEUE = 2;
     const BACKGROUND_REFRESH_MS = 100;
     const INPUT_DIRECTIONS = {
       ArrowUp:    { x: 0,  y: -1 },
       ArrowDown:  { x: 0,  y: 1 },
       ArrowLeft:  { x: -1, y: 0 },
-      ArrowRight: { x: 1,  y: 0 }
+      ArrowRight: { x: 1,  y: 0 },
+      w:          { x: 0,  y: -1 },
+      a:          { x: -1, y: 0 },
+      s:          { x: 0,  y: 1 },
+      d:          { x: 1,  y: 0 },
     };
 
-    let snake, dir, inputQueue, food, score, gameLoop, gameOver;
+    let snake, dir, inputQueue, foods, score, gameLoop, gameOver;
     let backgroundCanvas, backgroundCtx, lastBackgroundRefresh;
     let gameplayCanvas, gameplayCtx, gameplayLayerDirty;
     let gridCanvas, gridCtx;
     let renderRaf;
+
+    function focusGameplaySurface() {
+      setTimeout(() => {
+        if (document.activeElement !== canvas) {
+          canvas.focus({ preventScroll: true });
+        }
+      }, 0);
+    }
 
     function init() {
       buildBackgroundCache(true);
@@ -900,12 +1063,14 @@
       resetGameState();
       startGameLoop();
       startRenderLoop();
+      focusGameplaySurface();
     }
 
     // ── Game State ────────────────────────────────────────────
     function resetGameState() {
-      snake      = [{ x: 15, y: 15 }, { x: 14, y: 15 }, { x: 13, y: 15 }];
-      dir        = { x: 1, y: 0 };
+      const initialSpawn = getInitialSpawnState();
+      snake      = initialSpawn.snake;
+      dir        = initialSpawn.dir;
       inputQueue = [];
       score      = 0;
       gameOver   = false;
@@ -913,7 +1078,10 @@
       canvas._btn = null;
       gameplayLayerDirty = true;
       scoreEl.textContent = '0';
-      spawnFood();
+      resetFoodsForCurrentMode();
+      if (pendingStartDirection && enqueueDirection(pendingStartDirection)) {
+        pendingStartDirection = null;
+      }
     }
 
     function startGameLoop() {
@@ -924,14 +1092,6 @@
     function stopSimulation() { clearInterval(gameLoop); }
     function stopRenderer()   { cancelAnimationFrame(renderRaf); }
     function stopGameLoop()   { stopSimulation(); stopRenderer(); }
-
-    function spawnFood() {
-      let pos;
-      do {
-        pos = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
-      } while (snake.some(s => s.x === pos.x && s.y === pos.y));
-      food = pos;
-    }
 
     // ── Simulation ────────────────────────────────────────────
     function getNextHead() {
@@ -954,15 +1114,57 @@
     function tick() {
       consumeQueuedDirection();
       const head = getNextHead();
-      if (isOutOfBounds(head) || hitsSnake(head)) { endGame(); return; }
+      const outOfBounds = isOutOfBounds(head);
+      const selfCollision = !outOfBounds && hitsSnake(head);
+      const peerCollision = multiplayerMode ? getPeerCollision(head) : null;
+      if (outOfBounds || selfCollision || peerCollision) {
+        endGame({
+          cause: outOfBounds ? 'wall' : selfCollision ? 'self' : `peer-${peerCollision.type}`,
+          collision: peerCollision,
+          head,
+        });
+        return;
+      }
       snake.unshift(head);
-      if (head.x === food.x && head.y === food.y) {
+
+      let shouldGrow = false;
+      const consumedFood = getFoodAtPosition(head);
+      const consumedSpecial = multiplayerMode ? getSpecialItemAtPosition(head) : null;
+
+      if (multiplayerMode) {
+        if (consumedFood) {
+          if (isHost) {
+            resolveFoodClaim(consumedFood.id, currentUser.username);
+            shouldGrow = true;
+          } else {
+            requestFoodClaim(consumedFood.id);
+          }
+        }
+
+        if (!shouldGrow && pendingGrowth > 0) {
+          pendingGrowth--;
+          shouldGrow = true;
+        }
+
+        if (consumedSpecial) {
+          if (isHost) {
+            resolveSpecialClaim(consumedSpecial.id, currentUser.username);
+          } else {
+            requestSpecialClaim(consumedSpecial.id);
+          }
+        }
+      } else if (consumedFood) {
+        foods = foods.filter((foodItem) => foodItem.id !== consumedFood.id);
+        foods = refillFoods(foods);
         score += 10;
         scoreEl.textContent = score;
-        spawnFood();
-      } else {
+        shouldGrow = true;
+      }
+
+      if (!shouldGrow) {
         snake.pop();
       }
+
       gameplayLayerDirty = true;
       if (multiplayerMode) broadcastSnakeState();
     }
@@ -1043,35 +1245,107 @@
       ctx.drawImage(gridCanvas, 0, 0);
     }
 
-    function drawGameplayObjects(targetCtx) {
-      if (!food) return;
-      // Food
-      targetCtx.shadowColor = '#ff4136';
-      targetCtx.shadowBlur  = 14;
-      targetCtx.fillStyle   = '#ff4136';
-      const fx = food.x * CELL + 2, fy = food.y * CELL + 2, fs = CELL - 4;
-      targetCtx.beginPath();
-      targetCtx.arc(fx + fs / 2, fy + fs / 2, fs / 2, 0, Math.PI * 2);
-      targetCtx.fill();
-      targetCtx.shadowBlur = 0;
-      // My snake (faded when dead/spectating)
-      targetCtx.globalAlpha = spectating ? 0.25 : 1;
-      snake.forEach((seg, i) => {
-        const x = seg.x * CELL + 1, y = seg.y * CELL + 1, s = CELL - 2;
+    function drawSnakeSegments(targetCtx, snakeSegments, options = {}) {
+      if (!snakeSegments || snakeSegments.length === 0) return;
+
+      const {
+        color = '#39ff14',
+        dead = false,
+        multiplayer = false,
+        playerId = null,
+      } = options;
+
+      snakeSegments.forEach((seg, i) => {
+        const x = seg.x * CELL + 1;
+        const y = seg.y * CELL + 1;
+        const s = CELL - 2;
         const isHead = i === 0;
-        if (isHead) {
-          targetCtx.shadowColor = myColor;
+
+        if (dead) {
+          const corpseCollisionEnabled = isCorpseCollisionEnabled();
+          const corpseDamage = playerId ? getCorpseDamage(playerId, seg) : 0;
+          targetCtx.shadowBlur = 0;
+          if (corpseCollisionEnabled && corpseDamage >= 1) {
+            targetCtx.fillStyle = isHead
+              ? 'rgba(255,214,102,0.98)'
+              : 'rgba(255,166,77,0.96)';
+          } else {
+            targetCtx.fillStyle = isHead
+              ? (corpseCollisionEnabled ? 'rgba(184,184,184,0.96)' : 'rgba(170,170,170,0.28)')
+              : (corpseCollisionEnabled ? 'rgba(116,116,116,0.94)' : 'rgba(120,120,120,0.14)');
+          }
+        } else if (isHead) {
+          targetCtx.shadowColor = color;
           targetCtx.shadowBlur  = 16;
-          targetCtx.fillStyle   = myColor;
+          targetCtx.fillStyle   = color;
         } else {
           targetCtx.shadowBlur = 0;
-          targetCtx.fillStyle  = multiplayerMode
-            ? hexToRgba(myColor, 0.65 - (i / snake.length) * 0.3)
-            : `rgb(30, ${Math.round(200 - (i / snake.length) * 90)}, 20)`;
+          targetCtx.fillStyle  = multiplayer
+            ? hexToRgba(color, 0.65 - (i / snakeSegments.length) * 0.3)
+            : `rgb(30, ${Math.round(200 - (i / snakeSegments.length) * 90)}, 20)`;
         }
+
         targetCtx.beginPath();
         targetCtx.roundRect(x, y, s, s, isHead ? 5 : 3);
         targetCtx.fill();
+      });
+    }
+
+    function drawSpecialItems(targetCtx) {
+      specialItems.forEach((item) => {
+        const cx = item.x * CELL + CELL / 2;
+        const cy = item.y * CELL + CELL / 2;
+        const radius = CELL * 0.28;
+
+        targetCtx.shadowBlur = 14;
+        if (item.type === 'ammo') {
+          targetCtx.shadowColor = '#39a6ff';
+          targetCtx.fillStyle = '#39a6ff';
+          targetCtx.beginPath();
+          targetCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+          targetCtx.fill();
+          targetCtx.shadowBlur = 0;
+          targetCtx.fillStyle = 'rgba(255,255,255,0.9)';
+          targetCtx.beginPath();
+          targetCtx.arc(cx - 2, cy - 2, radius * 0.36, 0, Math.PI * 2);
+          targetCtx.fill();
+          return;
+        }
+
+        targetCtx.shadowColor = '#ffd84d';
+        targetCtx.fillStyle = '#ffd84d';
+        targetCtx.save();
+        targetCtx.translate(cx, cy);
+        targetCtx.rotate(Math.PI / 4);
+        targetCtx.fillRect(-radius, -radius, radius * 2, radius * 2);
+        targetCtx.restore();
+        targetCtx.shadowBlur = 0;
+        targetCtx.fillStyle = 'rgba(60,40,0,0.95)';
+        targetCtx.fillRect(cx - 1.5, cy - radius * 0.65, 3, radius * 1.3);
+        targetCtx.fillRect(cx - radius * 0.65, cy - 1.5, radius * 1.3, 3);
+      });
+    }
+
+    function drawGameplayObjects(targetCtx) {
+      foods.forEach((foodItem) => {
+        targetCtx.shadowColor = '#ff4136';
+        targetCtx.shadowBlur = 14;
+        targetCtx.fillStyle = '#ff4136';
+        const fx = foodItem.x * CELL + 2;
+        const fy = foodItem.y * CELL + 2;
+        const fs = CELL - 4;
+        targetCtx.beginPath();
+        targetCtx.arc(fx + fs / 2, fy + fs / 2, fs / 2, 0, Math.PI * 2);
+        targetCtx.fill();
+      });
+      drawSpecialItems(targetCtx);
+      targetCtx.shadowBlur = 0;
+      targetCtx.globalAlpha = 1;
+      drawSnakeSegments(targetCtx, snake, {
+        color: myColor,
+        dead: multiplayerMode && spectating,
+        multiplayer: multiplayerMode,
+        playerId: currentUser?.username,
       });
       targetCtx.shadowBlur  = 0;
       targetCtx.globalAlpha = 1;
@@ -1087,24 +1361,14 @@
     }
 
     function drawPeerSnakes(targetCtx) {
-      peers.forEach(peer => {
+      peers.forEach((peer, playerId) => {
         if (!peer.snake || peer.snake.length === 0) return;
-        const alpha = peer.dead ? 0.25 : 1;
-        peer.snake.forEach((seg, i) => {
-          const x = seg.x * CELL + 1, y = seg.y * CELL + 1, s = CELL - 2;
-          const isHead = i === 0;
-          targetCtx.globalAlpha = alpha;
-          if (isHead) {
-            targetCtx.shadowColor = peer.color;
-            targetCtx.shadowBlur  = 16;
-            targetCtx.fillStyle   = peer.color;
-          } else {
-            targetCtx.shadowBlur = 0;
-            targetCtx.fillStyle  = hexToRgba(peer.color, 0.65 - (i / peer.snake.length) * 0.3);
-          }
-          targetCtx.beginPath();
-          targetCtx.roundRect(x, y, s, s, isHead ? 5 : 3);
-          targetCtx.fill();
+        targetCtx.globalAlpha = 1;
+        drawSnakeSegments(targetCtx, peer.snake, {
+          color: peer.color,
+          dead: Boolean(peer.dead),
+          multiplayer: true,
+          playerId,
         });
         targetCtx.shadowBlur  = 0;
         targetCtx.globalAlpha = 1;
@@ -1137,6 +1401,63 @@
       ctx.drawImage(gameplayCanvas, 0, 0);
     }
 
+    function drawShotEffects() {
+      const effects = getActiveShotEffects();
+      if (!effects.length) return;
+
+      effects.forEach((effect) => {
+        const startX = effect.origin.x * CELL + CELL / 2;
+        const startY = effect.origin.y * CELL + CELL / 2;
+        const endX = effect.cell.x * CELL + CELL / 2;
+        const endY = effect.cell.y * CELL + CELL / 2;
+        const age = Math.min(1, (Date.now() - effect.createdAt) / SHOT_EFFECT_MS);
+        const alpha = Math.max(0, 1 - age);
+        const shotColor = getDisplayColorForPlayer(effect.shooterId);
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = hexToRgba(shotColor, Math.max(0.22, alpha));
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = shotColor;
+        ctx.shadowBlur = 18;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(255,255,255,${Math.max(0.35, alpha)})`;
+        ctx.lineWidth = 1.6;
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        const impactAlpha = effect.result === 'miss'
+          ? Math.max(0.2, alpha * 0.7)
+          : Math.max(0.34, alpha);
+        ctx.fillStyle = effect.result === 'miss'
+          ? `rgba(255,255,255,${impactAlpha})`
+          : `rgba(255,214,102,${impactAlpha})`;
+        ctx.shadowColor = effect.result === 'miss' ? '#ffffff' : '#ffd666';
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(endX, endY, effect.result === 'miss' ? 5.2 : 6.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = effect.result === 'miss'
+          ? `rgba(255,255,255,${Math.max(0.18, alpha * 0.5)})`
+          : `rgba(255,245,214,${Math.max(0.26, alpha * 0.85)})`;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(endX, endY, effect.result === 'miss' ? 7.4 : 8.6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
     function drawSpectatingOverlay() {
       ctx.fillStyle    = 'rgba(0,0,0,0.25)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1151,25 +1472,43 @@
     function renderFrame() {
       drawCachedLayers();
       drawDynamicLayers();
+      drawShotEffects();
+      renderMultiplayerHud();
       if (spectating) drawSpectatingOverlay();
     }
 
-    async function endGame() {
+    async function endGame(options = {}) {
       gameOver = true;
 
       if (multiplayerMode) {
         stopSimulation();
         spectating = true;
-        gameplayLayerDirty = true; // redraw snake faded
-        if (mpChannel) {
-          mpChannel.send({
-            type: 'broadcast',
-            event: 'player:dead',
-            payload: { id: currentUser.username, score },
+        gameplayLayerDirty = true; // redraw without the local snake while spectating
+        const deathPayload = {
+          id: currentUser.username,
+          score,
+          head: options.head || snake?.[0] || null,
+          reason: options.cause || 'unknown',
+          matchId: currentMatchId,
+          resolvedAt: Date.now(),
+        };
+        deathPayload.survivalMs = Math.max(0, deathPayload.resolvedAt - (matchStartAt || deathPayload.resolvedAt));
+
+        if (isHost) {
+          broadcastResolvedDeath(deathPayload);
+          if (options.collision?.type === 'head') {
+            broadcastResolvedDeath(buildResolvedDeathPayload(options.collision.playerId, { reason: 'head-on' }));
+          }
+        } else {
+          matchResults.set(currentUser.username, {
+            score,
+            survivalMs: deathPayload.survivalMs,
+            resolvedAt: deathPayload.resolvedAt,
           });
+          deadPlayers.add(currentUser.username);
+          checkAllDead();
+          requestDeathResolution(deathPayload);
         }
-        deadPlayers.add(currentUser.username);
-        checkAllDead();
         return;
       }
 
@@ -1204,33 +1543,72 @@
     }
 
     // ── Input ─────────────────────────────────────────────────
-    function getDirectionFromKey(key) { return INPUT_DIRECTIONS[key]; }
+    function getDirectionFromKey(key) {
+      if (INPUT_DIRECTIONS[key]) return INPUT_DIRECTIONS[key];
+      return INPUT_DIRECTIONS[String(key).toLowerCase()] || null;
+    }
 
     function isSameDirection(a, b) { return a.x === b.x && a.y === b.y; }
 
-    function getEffectiveDirection() { return inputQueue[inputQueue.length - 1] || dir; }
+    function getEffectiveDirection(queue = inputQueue) { return queue[queue.length - 1] || dir; }
 
-    function isValidQueuedDirection(direction) {
-      const eff = getEffectiveDirection();
+    function isValidQueuedDirection(direction, queue = inputQueue) {
+      const eff = getEffectiveDirection(queue);
       if (isSameDirection(direction, eff)) return false;
       return direction.x !== -eff.x || direction.y !== -eff.y;
     }
 
     function enqueueDirection(direction) {
-      if (inputQueue.length >= MAX_INPUT_QUEUE) return false;
       if (!isValidQueuedDirection(direction)) return false;
+      if (inputQueue.length >= MAX_INPUT_QUEUE) {
+        const compactQueue = inputQueue.slice(0, -1);
+        if (!isValidQueuedDirection(direction, compactQueue)) return false;
+        inputQueue[inputQueue.length - 1] = direction;
+        return true;
+      }
       inputQueue.push(direction);
       return true;
     }
 
-    function handleDirectionInput(key) {
-      const direction = getDirectionFromKey(key);
-      if (direction) enqueueDirection(direction);
+    function handleDirectionInput(event) {
+      const direction = getDirectionFromKey(event?.key);
+      if (!direction) return false;
+      if (event?.repeat) return true;
+
+      if (countdownActive && multiplayerMode && roomStage === 'playing') {
+        const openingDirection = getInitialSpawnState().dir;
+        const isReverse = direction.x === -openingDirection.x && direction.y === -openingDirection.y;
+        if (!isReverse) {
+          pendingStartDirection = direction;
+        }
+        return true;
+      }
+
+      enqueueDirection(direction);
       return Boolean(direction);
     }
 
+    function handleShootInput(event) {
+      const isSpace = event.code === 'Space' || event.key === ' ' || event.key === 'Spacebar';
+      if (!isSpace) return false;
+      if (!multiplayerMode || roomStage !== 'playing') return false;
+      if (event.repeat) return true;
+      if (!canCurrentPlayerShoot()) return true;
+
+      if (isHost) {
+        return resolveShotFire({
+          matchId: currentMatchId,
+          playerId: currentUser.username,
+          head: snake?.[0] || null,
+          direction: dir,
+        });
+      }
+
+      return requestShotFire(dir);
+    }
+
     function handleKeydown(e) {
-      if (handleDirectionInput(e.key)) e.preventDefault();
+      if (handleDirectionInput(e) || handleShootInput(e)) e.preventDefault();
     }
 
     function handleCanvasClick(e) {
@@ -1242,6 +1620,7 @@
         canvas._btn = null;
         init();
       }
+      focusGameplaySurface();
     }
 
     function updateCanvasCursor(e) {
