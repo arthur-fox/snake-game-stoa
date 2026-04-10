@@ -560,6 +560,7 @@
           <button class="mp-btn" onclick="joinRoomFromInput()">Join</button>
         </div>
         <button class="mp-btn secondary" onclick="startSolo()">Solo Game</button>
+        <button class="mp-btn secondary" onclick="startParty()">Party Mode</button>
       </div>
 
       <!-- Lobby -->
@@ -775,6 +776,7 @@
     const PLAYER_COLORS = ['#39ff14', '#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF'];
 
     let multiplayerMode = false;
+    let partyMode = false;
     let roomId    = null;
     let mpChannel = null;
     let isHost    = false;
@@ -791,6 +793,7 @@
       document.getElementById('canvas-wrap').style.display = 'none';
       document.getElementById('score-display').style.display = 'none';
       document.getElementById('level-display').style.display = 'none';
+      document.getElementById('legend-panel').style.display  = 'none';
       document.getElementById('hint').style.display        = 'none';
     }
 
@@ -812,7 +815,8 @@
       document.getElementById('mp-lobby').style.display    = 'none';
       document.getElementById('canvas-wrap').style.display = 'block';
       document.getElementById('score-display').style.display = '';
-      document.getElementById('level-display').style.display = '';
+      document.getElementById('level-display').style.display = partyMode ? '' : 'none';
+      document.getElementById('legend-panel').style.display  = partyMode ? '' : 'none';
       document.getElementById('hint').style.display        = '';
     }
 
@@ -830,6 +834,14 @@
 
     function startSolo() {
       multiplayerMode = false;
+      partyMode = false;
+      showCanvas();
+      init();
+    }
+
+    function startParty() {
+      multiplayerMode = false;
+      partyMode = true;
       showCanvas();
       init();
     }
@@ -888,6 +900,7 @@
       roomId = id;
       isHost = hosting;
       multiplayerMode = true;
+      partyMode = false;
       peers.clear();
       playerColors.clear();
       deadPlayers.clear();
@@ -1052,6 +1065,7 @@
         mpChannel = null;
       }
       multiplayerMode = false;
+      partyMode = false;
       roomId = null;
       isHost = false;
       peers.clear();
@@ -1115,7 +1129,7 @@
       buildGridCache();
       startGameLoop();
       startRenderLoop();
-      if (!multiplayerMode) scheduleNextPowerUp();
+      if (partyMode) scheduleNextPowerUp();
     }
 
     // ── Arena / Level System ──────────────────────────────────
@@ -1153,6 +1167,7 @@
     let levelShapes = ['square', 'circle', 'triangle'];
 
     function getArenaShape() {
+      if (!partyMode) return 'square';
       const level = Math.floor((score || 0) / 100);
       // Grow the sequence with a random shape each time a new level is reached
       while (levelShapes.length <= level) {
@@ -1270,10 +1285,10 @@
     }
 
     function scheduleNextPowerUp() {
-      if (multiplayerMode) return;
+      if (!partyMode) return;
       const delay = POWERUP_SPAWN_MIN + Math.random() * (POWERUP_SPAWN_MAX - POWERUP_SPAWN_MIN);
       powerUpSpawnTimeout = setTimeout(() => {
-        if (!gameOver && !multiplayerMode) {
+        if (!gameOver && partyMode) {
           spawnPowerUp();
           scheduleNextPowerUp();
         }
@@ -1442,25 +1457,27 @@
         scoreEl.textContent = score;
         spawnFood();
 
-        // Level transition check
-        const newShape = getArenaShape();
-        if (newShape !== lastLevelShape) {
-          lastLevelShape = newShape;
-          levelGraceUntil = Date.now() + 2000;   // 2-second silent invincibility
-          buildGridCache();          // rebuild arena visuals
-          updateLevelDisplay();
-          // Drop any power-ups now outside the new arena
-          powerUps = powerUps.filter(p => isInArena(p.x, p.y));
-          // Re-verify food landed inside new arena
-          if (!isInArena(food.x, food.y)) spawnFood();
-          gameplayLayerDirty = true;
+        // Level transition check (party mode only)
+        if (partyMode) {
+          const newShape = getArenaShape();
+          if (newShape !== lastLevelShape) {
+            lastLevelShape = newShape;
+            levelGraceUntil = Date.now() + 2000;   // 2-second silent invincibility
+            buildGridCache();          // rebuild arena visuals
+            updateLevelDisplay();
+            // Drop any power-ups now outside the new arena
+            powerUps = powerUps.filter(p => isInArena(p.x, p.y));
+            // Re-verify food landed inside new arena
+            if (!isInArena(food.x, food.y)) spawnFood();
+            gameplayLayerDirty = true;
+          }
         }
       } else {
         snake.pop();
       }
 
-      // Power-up pickup (solo only — multiplayer ignores powerups)
-      if (!multiplayerMode) {
+      // Power-up pickup (party mode only)
+      if (partyMode) {
         for (let i = powerUps.length - 1; i >= 0; i--) {
           const pu = powerUps[i];
           if (head.x === pu.x && head.y === pu.y) {
