@@ -9,8 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #111;
-      animation: hueShift 8s linear infinite;
+      background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d1b3e 50%, #0a2a1f 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,14 +17,6 @@
       min-height: 100vh;
       font-family: 'Segoe UI', system-ui, sans-serif;
       color: #fff;
-    }
-
-    @keyframes hueShift {
-      0%   { background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d1b3e 50%, #0a2a1f 100%); }
-      25%  { background: radial-gradient(ellipse at center, #0a2030 0%, #1a0a2e 50%, #2a0a3e 100%); }
-      50%  { background: radial-gradient(ellipse at center, #0d1b3e 0%, #0a2a1f 50%, #1a0010 100%); }
-      75%  { background: radial-gradient(ellipse at center, #2a0a3e 0%, #0d2030 50%, #0a1a2e 100%); }
-      100% { background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d1b3e 50%, #0a2a1f 100%); }
     }
 
     h1 {
@@ -108,6 +99,18 @@
       text-decoration: underline;
     }
 
+    #guest-btn {
+      padding: 9px;
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #guest-btn:hover { color: #fff; border-color: #888; }
+
     #auth-error {
       color: #ff4136;
       font-size: 0.85rem;
@@ -141,6 +144,83 @@
     }
     #logout-btn:hover { color: #fff; border-color: #666; }
 
+    /* ── Legend Panel ── */
+    #legend-panel {
+      width: 200px;
+      background: #0d0d1a;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 0 20px rgba(57,255,20,0.05);
+      margin-top: 131px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #legend-panel h3 {
+      text-align: center;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #39ff14;
+      text-shadow: 0 0 8px #39ff1455;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1e1e2e;
+    }
+
+    .legend-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .legend-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .legend-icon.invincible {
+      background: conic-gradient(red, orange, yellow, lime, cyan, blue, violet, red);
+      box-shadow: 0 0 8px rgba(255,255,255,0.4);
+      animation: legendSpin 3s linear infinite;
+    }
+
+    @keyframes legendSpin {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(360deg); }
+    }
+
+    .legend-icon.rotten {
+      background: radial-gradient(circle at 40% 35%, #2d6b2d, #0f2e0f);
+      border: 1px solid #1a4a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .legend-icon.blue-apple {
+      background: radial-gradient(circle at 38% 35%, #55ccff, #0055cc);
+      box-shadow: 0 0 8px #0088ff88;
+    }
+
+    .legend-text strong {
+      display: block;
+      font-size: 0.78rem;
+      color: #ddd;
+      margin-bottom: 3px;
+    }
+
+    .legend-text p {
+      font-size: 0.72rem;
+      color: #777;
+      line-height: 1.4;
+    }
+
     #columns {
       display: flex;
       gap: 24px;
@@ -162,6 +242,13 @@
       letter-spacing: 0.08em;
     }
     #score-display span { color: #fff; font-weight: bold; }
+
+    #level-display {
+      font-size: 0.9rem;
+      color: #aaa;
+      letter-spacing: 0.1em;
+    }
+    #level-display span { color: #39ff14; font-weight: bold; }
 
     #canvas-wrap {
       position: relative;
@@ -424,10 +511,37 @@
       <div id="auth-error"></div>
       <button id="auth-submit">Sign Up</button>
       <div id="auth-toggle">Already have an account? <span id="auth-toggle-link">Log in</span></div>
+      <button id="guest-btn">Play as Guest</button>
     </div>
   </div>
 
   <div id="columns">
+    <!-- Legend Panel -->
+    <div id="legend-panel">
+      <h3>Power-Ups</h3>
+      <div class="legend-item">
+        <div class="legend-icon invincible"></div>
+        <div class="legend-text">
+          <strong>Invincible Apple</strong>
+          <p>Snake glows and can't die for 10 seconds. Walls and self-collision are ignored.</p>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon rotten">☠</div>
+        <div class="legend-text">
+          <strong>Poisoned Apple</strong>
+          <p>Instant game over if eaten. Appears in groups — vanish after 7s if ignored.</p>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon blue-apple"></div>
+        <div class="legend-text">
+          <strong>Blue Apple</strong>
+          <p>Walls disappear for 15 seconds. Snake wraps through any edge like a tunnel.</p>
+        </div>
+      </div>
+    </div>
+
     <div id="game-col">
       <h1>Snake</h1>
       <div id="user-bar">
@@ -435,6 +549,7 @@
         <button id="logout-btn">Logout</button>
       </div>
       <div id="score-display" style="display:none">Score: <span id="score-val">0</span></div>
+      <div id="level-display" style="display:none">Level <span id="level-val">1</span></div>
 
       <!-- Mode Selection -->
       <div id="mp-entry" style="display:none">
@@ -445,6 +560,7 @@
           <button class="mp-btn" onclick="joinRoomFromInput()">Join</button>
         </div>
         <button class="mp-btn secondary" onclick="startSolo()">Solo Game</button>
+        <button class="mp-btn secondary" onclick="startParty()">Party Mode</button>
       </div>
 
       <!-- Lobby -->
@@ -481,7 +597,8 @@
     // ── Supabase ──────────────────────────────────────────────
     const SUPABASE_URL = 'https://nsvienlugithpmehukjt.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_nyCIqLLTzWN7_im_rdFhVw_QHdgkdtw';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let sb = null;
+    try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn('Supabase unavailable, guest-only mode.'); }
 
     let currentUser = null;
 
@@ -514,8 +631,10 @@
 
     authSubmit.addEventListener('click', submitAuth);
     authPassword.addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+    document.getElementById('guest-btn').addEventListener('click', playAsGuest);
 
     async function submitAuth() {
+      if (!sb) { authError.textContent = 'No connection — use Play as Guest.'; return; }
       const username = authUsername.value.trim();
       const password = authPassword.value;
 
@@ -557,10 +676,16 @@
       showGame();
     }
 
+    function playAsGuest() {
+      currentUser = { id: null, username: 'Guest' };
+      showGame();
+    }
+
     function showGame() {
       authModal.classList.add('hidden');
       document.getElementById('username-display').textContent = currentUser.username;
-      fetchLeaderboard();
+      if (currentUser.id) fetchLeaderboard();
+      else document.getElementById('leaderboard-list').innerHTML = '<li id="lb-status">Sign in to view</li>';
       showMpEntry();
     }
 
@@ -572,7 +697,7 @@
       }
       multiplayerMode = false;
       spectating = false;
-      await sb.auth.signOut();
+      if (sb) await sb.auth.signOut();
       currentUser = null;
       showNothing();
       authMode               = 'signup';
@@ -591,6 +716,7 @@
     // ── Leaderboard ───────────────────────────────────────────
     async function fetchLeaderboard() {
       const list = document.getElementById('leaderboard-list');
+      if (!sb) { list.innerHTML = '<li id="lb-status">Sign in to view</li>'; return; }
       list.innerHTML = '<li id="lb-status">Loading…</li>';
 
       const { data, error } = await sb
@@ -618,7 +744,7 @@
     }
 
     async function submitScore(score) {
-      if (!currentUser) return;
+      if (!currentUser || !currentUser.id || !sb) return;
       const { error } = await sb.from('scores').insert({
         user_id:  currentUser.id,
         username: currentUser.username,
@@ -635,6 +761,7 @@
 
     // ── Session Restore ───────────────────────────────────────
     async function bootAuth() {
+      if (!sb) return;
       const { data: { session } } = await sb.auth.getSession();
       if (session) {
         currentUser = {
@@ -649,6 +776,7 @@
     const PLAYER_COLORS = ['#39ff14', '#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF'];
 
     let multiplayerMode = false;
+    let partyMode = false;
     let roomId    = null;
     let mpChannel = null;
     let isHost    = false;
@@ -664,6 +792,8 @@
       document.getElementById('mp-lobby').style.display    = 'none';
       document.getElementById('canvas-wrap').style.display = 'none';
       document.getElementById('score-display').style.display = 'none';
+      document.getElementById('level-display').style.display = 'none';
+      document.getElementById('legend-panel').style.display  = 'none';
       document.getElementById('hint').style.display        = 'none';
     }
 
@@ -685,6 +815,8 @@
       document.getElementById('mp-lobby').style.display    = 'none';
       document.getElementById('canvas-wrap').style.display = 'block';
       document.getElementById('score-display').style.display = '';
+      document.getElementById('level-display').style.display = partyMode ? '' : 'none';
+      document.getElementById('legend-panel').style.display  = partyMode ? '' : 'none';
       document.getElementById('hint').style.display        = '';
     }
 
@@ -702,6 +834,14 @@
 
     function startSolo() {
       multiplayerMode = false;
+      partyMode = false;
+      showCanvas();
+      init();
+    }
+
+    function startParty() {
+      multiplayerMode = false;
+      partyMode = true;
       showCanvas();
       init();
     }
@@ -760,6 +900,7 @@
       roomId = id;
       isHost = hosting;
       multiplayerMode = true;
+      partyMode = false;
       peers.clear();
       playerColors.clear();
       deadPlayers.clear();
@@ -924,6 +1065,7 @@
         mpChannel = null;
       }
       multiplayerMode = false;
+      partyMode = false;
       roomId = null;
       isHost = false;
       peers.clear();
@@ -963,13 +1105,115 @@
     let gridCanvas, gridCtx;
     let renderRaf;
 
+    // ── Power-Up State ────────────────────────────────────────
+    const POWERUP_TYPES       = ['INVINCIBLE', 'ROTTEN', 'BLUE_APPLE'];
+    const POWERUP_SPAWN_MIN   = 10000;   // 10 s
+    const POWERUP_SPAWN_MAX   = 20000;   // 20 s
+    const INVINCIBLE_DURATION = 10000;   // 10 s
+    const BLUE_APPLE_DURATION = 15000;   // 15 s
+    const POWERUP_EXPIRE_MS   = 7000;    // 7 s — all power-ups vanish if uneaten
+
+    let powerUps            = [];   // [{type, x, y}]
+    let invincible          = false;
+    let wallWrap            = false;
+    let invincibleUntil     = 0;
+    let wallWrapUntil       = 0;
+    let levelGraceUntil     = 0;   // silent 2-second invincibility after level change
+    let powerUpSpawnTimeout = null;
+    let hungerCounts        = { INVINCIBLE: 0, ROTTEN: 0, BLUE_APPLE: 0 };
+
     function init() {
+      resetGameState();           // must run first so score=0 before buildGridCache
       buildBackgroundCache(true);
       buildGameplayLayerCache();
       buildGridCache();
-      resetGameState();
       startGameLoop();
       startRenderLoop();
+      if (partyMode) scheduleNextPowerUp();
+    }
+
+    // ── Arena / Level System ──────────────────────────────────
+    const SHAPES = ['square', 'circle', 'triangle'];
+
+    const LEVEL_CONFIG = {
+      square: {
+        interior:    null,
+        borderColor: '#2a2a2a',
+        gridColor:   'rgba(255,255,255,0.03)',
+        snakeHead:   null,        // null = use default green
+        snakeBodyFn: (i, len) => `rgb(30,${Math.round(200-(i/len)*90)},20)`,
+        eyeColor:    '#111',
+      },
+      circle: {
+        interior:    '#FFD700',
+        borderColor: '#FF8C00',
+        gridColor:   'rgba(0,0,0,0.12)',
+        snakeHead:   '#0d0d0d',
+        snakeBodyFn: (i, len) => `rgba(13,13,13,${(0.9-(i/len)*0.35).toFixed(2)})`,
+        eyeColor:    '#fff',
+      },
+      triangle: {
+        interior:    '#0c0028',
+        borderColor: '#0088ff',
+        gridColor:   'rgba(255,255,255,0.06)',
+        snakeHead:   '#f0f0f0',
+        snakeBodyFn: (i, len) => `rgba(220,220,220,${(0.9-(i/len)*0.35).toFixed(2)})`,
+        eyeColor:    '#111',
+      },
+    };
+
+    let lastLevelShape = 'square';
+    // First 3 levels are fixed; level 4+ picks randomly when first reached
+    let levelShapes = ['square', 'circle', 'triangle'];
+
+    function getArenaShape() {
+      if (!partyMode) return 'square';
+      const level = Math.floor((score || 0) / 100);
+      // Grow the sequence with a random shape each time a new level is reached
+      while (levelShapes.length <= level) {
+        levelShapes.push(SHAPES[Math.floor(Math.random() * SHAPES.length)]);
+      }
+      return levelShapes[level];
+    }
+
+    function _triSign(px, py, x1, y1, x2, y2) {
+      return (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
+    }
+
+    function isInArena(x, y) {
+      const shape = getArenaShape();
+      if (shape === 'square') return x >= 0 && x < COLS && y >= 0 && y < ROWS;
+      const px = x + 0.5, py = y + 0.5;   // cell-centre in grid units
+      if (shape === 'circle') {
+        return (px - 15) * (px - 15) + (py - 15) * (py - 15) < 14.5 * 14.5;
+      }
+      if (shape === 'triangle') {
+        // Vertices (cell coords): top (15,1), bottom-left (1,29), bottom-right (29,29)
+        const d1 = _triSign(px, py, 15, 1,  1, 29);
+        const d2 = _triSign(px, py,  1, 29, 29, 29);
+        const d3 = _triSign(px, py, 29, 29, 15,  1);
+        return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0));
+      }
+      return false;
+    }
+
+    function buildArenaPath(targetCtx) {
+      const W = canvas.width, H = canvas.height;
+      const shape = getArenaShape();
+      targetCtx.beginPath();
+      if (shape === 'circle') {
+        targetCtx.arc(W / 2, H / 2, W / 2 - 4, 0, Math.PI * 2);
+      } else if (shape === 'triangle') {
+        targetCtx.moveTo(W / 2,        CELL);
+        targetCtx.lineTo(CELL,         H - CELL);
+        targetCtx.lineTo(W - CELL,     H - CELL);
+        targetCtx.closePath();
+      }
+    }
+
+    function updateLevelDisplay() {
+      const el = document.getElementById('level-val');
+      if (el) el.textContent = Math.floor(score / 100) + 1;
     }
 
     // ── Game State ────────────────────────────────────────────
@@ -983,6 +1227,18 @@
       canvas._btn = null;
       gameplayLayerDirty = true;
       scoreEl.textContent = '0';
+      // Reset power-up state
+      powerUps        = [];
+      invincible      = false;
+      wallWrap        = false;
+      invincibleUntil = 0;
+      wallWrapUntil   = 0;
+      levelGraceUntil = 0;
+      hungerCounts    = { INVINCIBLE: 0, ROTTEN: 0, BLUE_APPLE: 0 };
+      lastLevelShape  = 'square';
+      levelShapes     = ['square', 'circle', 'triangle'];
+      updateWallDisplay();
+      updateLevelDisplay();
       spawnFood();
     }
 
@@ -991,7 +1247,10 @@
       gameLoop = setInterval(tick, TICK);
     }
 
-    function stopSimulation() { clearInterval(gameLoop); }
+    function stopSimulation() {
+      clearInterval(gameLoop);
+      clearTimeout(powerUpSpawnTimeout); powerUpSpawnTimeout = null;
+    }
     function stopRenderer()   { cancelAnimationFrame(renderRaf); }
     function stopGameLoop()   { stopSimulation(); stopRenderer(); }
 
@@ -999,8 +1258,109 @@
       let pos;
       do {
         pos = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
-      } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+      } while (
+        !isInArena(pos.x, pos.y) ||
+        snake.some(s => s.x === pos.x && s.y === pos.y) ||
+        powerUps.some(p => p.x === pos.x && p.y === pos.y)
+      );
       food = pos;
+    }
+
+    // ── Power-Up Logic ────────────────────────────────────────
+    function updateWallDisplay() {
+      // Shaped arenas remove the square border entirely — only square level uses it
+      if (getArenaShape() !== 'square') {
+        canvas.style.border    = 'none';
+        canvas.style.boxShadow = 'none';
+        buildGridCache(); // rebuild border color (e.g. circle turns blue on Blue Apple)
+        return;
+      }
+      if (wallWrap) {
+        canvas.style.border    = '2px solid #0088ff';
+        canvas.style.boxShadow = '0 0 30px #0088ff66, 0 0 60px #0088ff22';
+      } else {
+        canvas.style.border    = '2px solid #2a2a2a';
+        canvas.style.boxShadow = '0 0 30px #39ff1422';
+      }
+    }
+
+    function scheduleNextPowerUp() {
+      if (!partyMode) return;
+      const delay = POWERUP_SPAWN_MIN + Math.random() * (POWERUP_SPAWN_MAX - POWERUP_SPAWN_MIN);
+      powerUpSpawnTimeout = setTimeout(() => {
+        if (!gameOver && partyMode) {
+          spawnPowerUp();
+          scheduleNextPowerUp();
+        }
+      }, delay);
+    }
+
+    function spawnPowerUp() {
+      // Weighted random: base weight 1 + hunger for each type not recently seen
+      const weights = POWERUP_TYPES.map(t => 1 + hungerCounts[t]);
+      const total   = weights.reduce((a, b) => a + b, 0);
+      let r = Math.random() * total;
+      let type = POWERUP_TYPES[POWERUP_TYPES.length - 1];
+      for (let i = 0; i < POWERUP_TYPES.length; i++) {
+        r -= weights[i];
+        if (r <= 0) { type = POWERUP_TYPES[i]; break; }
+      }
+
+      // Update hunger: reset chosen type, increment all others
+      POWERUP_TYPES.forEach(t => {
+        hungerCounts[t] = (t === type) ? 0 : hungerCounts[t] + 1;
+      });
+
+      function randomFreeCell(extras) {
+        let pos, attempts = 0;
+        do {
+          pos = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+          attempts++;
+        } while (attempts < 200 && (
+          !isInArena(pos.x, pos.y) ||
+          snake.some(s => s.x === pos.x && s.y === pos.y) ||
+          (pos.x === food.x && pos.y === food.y) ||
+          powerUps.some(p => p.x === pos.x && p.y === pos.y) ||
+          (extras || []).some(e => e.x === pos.x && e.y === pos.y)
+        ));
+        return pos;
+      }
+
+      const spawnedAt = Date.now();
+      if (type === 'ROTTEN') {
+        // Base 3 apples + 1 per 100 score
+        const count  = 3 + Math.floor(score / 100);
+        const placed = [];
+        for (let i = 0; i < count; i++) {
+          const pos = randomFreeCell(placed);
+          placed.push(pos);
+          powerUps.push({ type: 'ROTTEN', x: pos.x, y: pos.y, spawnedAt });
+        }
+      } else {
+        // Don't stack if same effect already active or already on board
+        if (type === 'INVINCIBLE' && (invincible || powerUps.some(p => p.type === 'INVINCIBLE'))) return;
+        if (type === 'BLUE_APPLE' && (wallWrap   || powerUps.some(p => p.type === 'BLUE_APPLE')))  return;
+        powerUps.push({ type, ...randomFreeCell([]), spawnedAt });
+      }
+      gameplayLayerDirty = true;
+    }
+
+    function applyPowerUp(type) {
+      const now = Date.now();
+      if (type === 'INVINCIBLE') {
+        invincible      = true;
+        invincibleUntil = now + INVINCIBLE_DURATION;
+        score += 5;
+        scoreEl.textContent = score;
+      } else if (type === 'ROTTEN') {
+        endGame(); return;
+      } else if (type === 'BLUE_APPLE') {
+        wallWrap      = true;
+        wallWrapUntil = now + BLUE_APPLE_DURATION;
+        updateWallDisplay();
+        score += 5;
+        scoreEl.textContent = score;
+      }
     }
 
     // ── Simulation ────────────────────────────────────────────
@@ -1009,7 +1369,35 @@
     }
 
     function isOutOfBounds(pos) {
-      return pos.x < 0 || pos.x >= COLS || pos.y < 0 || pos.y >= ROWS;
+      // Blue apple dissolves arena walls — only outer square grid matters
+      if (wallWrap) return pos.x < 0 || pos.x >= COLS || pos.y < 0 || pos.y >= ROWS;
+      return !isInArena(pos.x, pos.y);
+    }
+
+    // Triangle wrapping uses snake direction (not geometry) to avoid ambiguity at the top vertex.
+    //   UP    → exits top point  → emerges at bottom centre (y=28)
+    //   DOWN  → exits bottom     → emerges just inside top vertex (y=2)
+    //   LEFT  → exits left side  → emerges on right side at same row
+    //   RIGHT → exits right side → emerges on left side  at same row
+    function wrapTriangle(head, snakeDir) {
+      if (snakeDir.y === -1) {
+        // Heading up → out the top point → emerge at bottom centre
+        return { x: 15, y: 28 };
+      }
+      if (snakeDir.y === 1) {
+        // Heading down → out the bottom → emerge just inside top vertex
+        return { x: 15, y: 2 };
+      }
+      // Heading left or right: wrap to opposite side at same row.
+      // At row y the triangle's half-width at the cell centre is: t * 14
+      // where t = (y + 0.5 - 1) / 28 = (y - 0.5) / 28
+      const t = Math.max(0.01, Math.min(1, (head.y - 0.5) / 28));
+      if (snakeDir.x === -1) {
+        // Exiting left → land on right side
+        return { x: Math.floor(15 + t * 14 - 0.5), y: head.y };
+      }
+      // Exiting right → land on left side
+      return { x: Math.floor(15 - t * 14 + 0.5), y: head.y };
     }
 
     function hitsSnake(pos) {
@@ -1023,16 +1411,87 @@
 
     function tick() {
       consumeQueuedDirection();
-      const head = getNextHead();
-      if (isOutOfBounds(head) || hitsSnake(head)) { endGame(); return; }
+
+      // Expire active power-up effects
+      const now = Date.now();
+      if (invincible && now >= invincibleUntil) {
+        invincible = false;
+        gameplayLayerDirty = true;
+      }
+      if (wallWrap && now >= wallWrapUntil) {
+        wallWrap = false;
+        updateWallDisplay();
+        gameplayLayerDirty = true;
+      }
+
+      // Expire any power-up that has been on the board for 7 seconds uneaten
+      const before = powerUps.length;
+      powerUps = powerUps.filter(p => now - p.spawnedAt < POWERUP_EXPIRE_MS);
+      if (powerUps.length !== before) gameplayLayerDirty = true;
+
+      let head = getNextHead();
+      let didTriangleWrap = false;
+
+      // Wall collision
+      if (getArenaShape() === 'triangle' && !isInArena(head.x, head.y)) {
+        head = wrapTriangle(head, dir);
+        if (!isInArena(head.x, head.y)) head = { x: 15, y: 28 };
+        didTriangleWrap = true;  // skip self-collision this tick (wrap destination may overlap body)
+      } else if (isOutOfBounds(head)) {
+        if (wallWrap || invincible || Date.now() < levelGraceUntil) {
+          head.x = ((head.x % COLS) + COLS) % COLS;
+          head.y = ((head.y % ROWS) + ROWS) % ROWS;
+        } else {
+          endGame(); return;
+        }
+      }
+
+      // Self collision: skip on the tick a triangle wrap happened (body moves away next tick)
+      if (!invincible && !didTriangleWrap && Date.now() >= levelGraceUntil && hitsSnake(head)) { endGame(); return; }
+
       snake.unshift(head);
+
+      // Food
       if (head.x === food.x && head.y === food.y) {
         score += 10;
         scoreEl.textContent = score;
         spawnFood();
+
+        // Level transition check (party mode only)
+        if (partyMode) {
+          const newShape = getArenaShape();
+          if (newShape !== lastLevelShape) {
+            lastLevelShape = newShape;
+            levelGraceUntil = Date.now() + 2000;   // 2-second silent invincibility
+            buildGridCache();          // rebuild arena visuals
+            updateLevelDisplay();
+            // Drop any power-ups now outside the new arena
+            powerUps = powerUps.filter(p => isInArena(p.x, p.y));
+            // Re-verify food landed inside new arena
+            if (!isInArena(food.x, food.y)) spawnFood();
+            gameplayLayerDirty = true;
+          }
+        }
       } else {
         snake.pop();
       }
+
+      // Power-up pickup (party mode only)
+      if (partyMode) {
+        for (let i = powerUps.length - 1; i >= 0; i--) {
+          const pu = powerUps[i];
+          if (head.x === pu.x && head.y === pu.y) {
+            applyPowerUp(pu.type);
+            if (pu.type === 'ROTTEN') {
+              powerUps = powerUps.filter(p => p.type !== 'ROTTEN');
+            } else {
+              powerUps.splice(i, 1);
+            }
+            break;
+          }
+        }
+      }
+
       gameplayLayerDirty = true;
       if (multiplayerMode) broadcastSnakeState();
     }
@@ -1052,7 +1511,54 @@
       gridCanvas.width = canvas.width;
       gridCanvas.height = canvas.height;
       gridCtx = gridCanvas.getContext('2d');
-      drawGridLines(gridCtx);
+      const shape = getArenaShape();
+
+      if (shape === 'square') {
+        canvas.style.border    = wallWrap ? '2px solid #0088ff' : '2px solid #2a2a2a';
+        canvas.style.boxShadow = wallWrap ? '0 0 30px #0088ff66' : '0 0 30px #39ff1422';
+        canvas.style.borderRadius = '4px';
+        drawGridLines(gridCtx);
+      } else {
+        // No square border — the shape IS the boundary
+        canvas.style.border    = 'none';
+        canvas.style.boxShadow = 'none';
+        canvas.style.borderRadius = '0';
+
+        const cfg = LEVEL_CONFIG[shape];
+
+        // Fill entire canvas with solid dark "wall" so outside the shape looks impassable
+        gridCtx.fillStyle = '#060608';
+        gridCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Fill arena interior
+        buildArenaPath(gridCtx);
+        gridCtx.fillStyle = cfg.interior;
+        gridCtx.fill();
+
+        // Grid lines clipped to arena interior
+        gridCtx.save();
+        buildArenaPath(gridCtx);
+        gridCtx.clip();
+        gridCtx.strokeStyle = cfg.gridColor;
+        gridCtx.lineWidth   = 0.5;
+        for (let x = 0; x <= canvas.width;  x += CELL) {
+          gridCtx.beginPath(); gridCtx.moveTo(x, 0); gridCtx.lineTo(x, canvas.height); gridCtx.stroke();
+        }
+        for (let y = 0; y <= canvas.height; y += CELL) {
+          gridCtx.beginPath(); gridCtx.moveTo(0, y); gridCtx.lineTo(canvas.width, y); gridCtx.stroke();
+        }
+        gridCtx.restore();
+
+        // Arena border — this IS the wall; turns blue when Blue Apple is active on circle
+        const borderActive = wallWrap && shape === 'circle';
+        buildArenaPath(gridCtx);
+        gridCtx.strokeStyle  = borderActive ? '#0088ff' : cfg.borderColor;
+        gridCtx.lineWidth    = 6;
+        gridCtx.shadowColor  = borderActive ? '#0088ff' : 'transparent';
+        gridCtx.shadowBlur   = borderActive ? 18 : 0;
+        gridCtx.stroke();
+        gridCtx.shadowBlur   = 0;
+      }
     }
 
     function buildGameplayLayerCache() {
@@ -1066,8 +1572,7 @@
     }
 
     function buildBackgroundCache(force = false) {
-      const now = Date.now();
-      if (!force && backgroundCanvas && now - lastBackgroundRefresh < BACKGROUND_REFRESH_MS) return;
+      if (!force && backgroundCanvas) return;  // static — only build once
 
       if (!backgroundCanvas) {
         backgroundCanvas = document.createElement('canvas');
@@ -1075,19 +1580,14 @@
         backgroundCanvas.height = canvas.height;
         backgroundCtx = backgroundCanvas.getContext('2d');
       }
-      lastBackgroundRefresh = now;
 
-      const t    = now / 4000;
-      const hue1 = (t * 60) % 360;
-      const hue2 = (hue1 + 120) % 360;
-      const hue3 = (hue1 + 240) % 360;
       const grad = backgroundCtx.createRadialGradient(
         canvas.width * 0.5, canvas.height * 0.4, 0,
         canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.8
       );
-      grad.addColorStop(0,   `hsl(${hue1}, 40%, 8%)`);
-      grad.addColorStop(0.5, `hsl(${hue2}, 50%, 6%)`);
-      grad.addColorStop(1,   `hsl(${hue3}, 60%, 4%)`);
+      grad.addColorStop(0,   '#0f0820');
+      grad.addColorStop(0.5, '#0a1428');
+      grad.addColorStop(1,   '#061510');
       backgroundCtx.fillStyle = grad;
       backgroundCtx.fillRect(0, 0, canvas.width, canvas.height);
     }
@@ -1115,7 +1615,9 @@
 
     function drawGameplayObjects(targetCtx) {
       if (!food) return;
-      // Food
+      const now = Date.now();
+
+      // ── Food (red circle) ─────────────────────────────────
       targetCtx.shadowColor = '#ff4136';
       targetCtx.shadowBlur  = 14;
       targetCtx.fillStyle   = '#ff4136';
@@ -1124,20 +1626,99 @@
       targetCtx.arc(fx + fs / 2, fy + fs / 2, fs / 2, 0, Math.PI * 2);
       targetCtx.fill();
       targetCtx.shadowBlur = 0;
-      // My snake (faded when dead/spectating)
+
+      // ── Power-up items ─────────────────────────────────────
+      powerUps.forEach(pu => {
+        const px = pu.x * CELL + 2, py = pu.y * CELL + 2, ps = CELL - 4;
+        const cx = px + ps / 2, cy = py + ps / 2, r = ps / 2;
+
+        if (pu.type === 'INVINCIBLE') {
+          // Pulsing rainbow gradient circle
+          const pulse = 0.7 + 0.3 * Math.sin(now / 180);
+          const hue   = (now / 18) % 360;
+          const grad  = targetCtx.createRadialGradient(cx, cy, 0, cx, cy, r);
+          grad.addColorStop(0,   `hsla(${hue},            100%, 85%, ${pulse})`);
+          grad.addColorStop(0.5, `hsla(${(hue+120)%360},  100%, 60%, ${pulse * 0.85})`);
+          grad.addColorStop(1,   `hsla(${(hue+240)%360},  100%, 40%, 0)`);
+          targetCtx.shadowColor = `hsl(${hue}, 100%, 70%)`;
+          targetCtx.shadowBlur  = 14 * pulse;
+          targetCtx.fillStyle   = grad;
+          targetCtx.beginPath();
+          targetCtx.arc(cx, cy, r, 0, Math.PI * 2);
+          targetCtx.fill();
+          targetCtx.shadowBlur = 0;
+
+        } else if (pu.type === 'ROTTEN') {
+          // Dark green poisoned circle
+          targetCtx.shadowColor = '#1a5a1a';
+          targetCtx.shadowBlur  = 10;
+          const rGrad = targetCtx.createRadialGradient(cx - r*0.2, cy - r*0.2, 0, cx, cy, r);
+          rGrad.addColorStop(0, '#2d6b2d');
+          rGrad.addColorStop(1, '#0f2e0f');
+          targetCtx.fillStyle = rGrad;
+          targetCtx.beginPath();
+          targetCtx.arc(cx, cy, r, 0, Math.PI * 2);
+          targetCtx.fill();
+          targetCtx.shadowBlur = 0;
+          // Skull & crossbones emoji centered
+          targetCtx.font         = `bold ${Math.floor(ps * 0.72)}px serif`;
+          targetCtx.textAlign    = 'center';
+          targetCtx.textBaseline = 'middle';
+          targetCtx.fillStyle    = '#7ddb7d';
+          targetCtx.fillText('☠', cx, cy + 1);
+          targetCtx.textBaseline = 'alphabetic';
+
+        } else if (pu.type === 'BLUE_APPLE') {
+          // Bright blue pulsing circle with highlight
+          const pulse = 0.75 + 0.25 * Math.sin(now / 280);
+          targetCtx.shadowColor = '#00aaff';
+          targetCtx.shadowBlur  = 18 * pulse;
+          const bGrad = targetCtx.createRadialGradient(cx - r*0.25, cy - r*0.25, 0, cx, cy, r);
+          bGrad.addColorStop(0, '#55ccff');
+          bGrad.addColorStop(1, '#0055cc');
+          targetCtx.fillStyle = bGrad;
+          targetCtx.beginPath();
+          targetCtx.arc(cx, cy, r, 0, Math.PI * 2);
+          targetCtx.fill();
+          // Specular highlight
+          targetCtx.shadowBlur  = 0;
+          targetCtx.fillStyle   = 'rgba(200,240,255,0.45)';
+          targetCtx.beginPath();
+          targetCtx.arc(cx - r * 0.28, cy - r * 0.28, r * 0.32, 0, Math.PI * 2);
+          targetCtx.fill();
+        }
+      });
+      targetCtx.shadowBlur  = 0;
+      targetCtx.globalAlpha = 1;
+
+      // ── My snake ───────────────────────────────────────────
+      const lcfg = LEVEL_CONFIG[getArenaShape()];
       targetCtx.globalAlpha = spectating ? 0.25 : 1;
       snake.forEach((seg, i) => {
         const x = seg.x * CELL + 1, y = seg.y * CELL + 1, s = CELL - 2;
         const isHead = i === 0;
-        if (isHead) {
-          targetCtx.shadowColor = myColor;
+
+        if (invincible) {
+          // Rainbow shifting gradient glow per segment
+          const hue   = ((now / 25) + i * 18) % 360;
+          const pulse = 0.55 + 0.45 * Math.sin(now / 140 + i * 0.4);
+          targetCtx.shadowColor = `hsl(${hue}, 100%, 65%)`;
+          targetCtx.shadowBlur  = 22 * pulse;
+          targetCtx.fillStyle   = `hsl(${hue}, 100%, ${isHead ? 72 : 58}%)`;
+        } else if (isHead) {
+          const headColor = (!multiplayerMode && lcfg.snakeHead) ? lcfg.snakeHead : myColor;
+          targetCtx.shadowColor = headColor;
           targetCtx.shadowBlur  = 16;
-          targetCtx.fillStyle   = myColor;
+          targetCtx.fillStyle   = headColor;
         } else {
           targetCtx.shadowBlur = 0;
-          targetCtx.fillStyle  = multiplayerMode
-            ? hexToRgba(myColor, 0.65 - (i / snake.length) * 0.3)
-            : `rgb(30, ${Math.round(200 - (i / snake.length) * 90)}, 20)`;
+          if (multiplayerMode) {
+            targetCtx.fillStyle = hexToRgba(myColor, 0.65 - (i / snake.length) * 0.3);
+          } else if (lcfg.snakeHead) {
+            targetCtx.fillStyle = lcfg.snakeBodyFn(i, snake.length);
+          } else {
+            targetCtx.fillStyle = `rgb(30,${Math.round(200-(i/snake.length)*90)},20)`;
+          }
         }
         targetCtx.beginPath();
         targetCtx.roundRect(x, y, s, s, isHead ? 5 : 3);
@@ -1145,9 +1726,10 @@
       });
       targetCtx.shadowBlur  = 0;
       targetCtx.globalAlpha = 1;
-      // Eyes (only when alive)
+
+      // ── Eyes (only when alive) ─────────────────────────────
       if (!spectating) {
-        targetCtx.fillStyle = '#111';
+        targetCtx.fillStyle = (!multiplayerMode && lcfg.eyeColor) ? lcfg.eyeColor : '#111';
         getEyePositions(snake[0].x * CELL, snake[0].y * CELL, dir, 5).forEach(([ex, ey]) => {
           targetCtx.beginPath();
           targetCtx.arc(ex, ey, 2.5, 0, Math.PI * 2);
@@ -1204,9 +1786,17 @@
     function rebuildGameplayLayer() {
       if (!gameplayCanvas) buildGameplayLayerCache();
       gameplayCtx.clearRect(0, 0, canvas.width, canvas.height);
+      const shape = getArenaShape();
+      if (shape !== 'square') {
+        gameplayCtx.save();
+        buildArenaPath(gameplayCtx);
+        gameplayCtx.clip();
+      }
       if (multiplayerMode) drawPeerSnakes(gameplayCtx);
       drawGameplayObjects(gameplayCtx);
-      gameplayLayerDirty = false;
+      if (shape !== 'square') gameplayCtx.restore();
+      // Stay dirty when animated power-up items or effects are on screen
+      gameplayLayerDirty = invincible || powerUps.length > 0;
     }
 
     function drawDynamicLayers() {
