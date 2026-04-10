@@ -779,6 +779,7 @@
     let mpChannel = null;
     let isHost    = false;
     let peers     = new Map();      // username → { snake, score, color, dead }
+    let playerColors = new Map();
     let deadPlayers = new Set();
     let myColor   = PLAYER_COLORS[0];
     let spectating = false;
@@ -833,11 +834,62 @@
       init();
     }
 
+    function hashUsername(username) {
+      let hash = 0;
+      for (let i = 0; i < username.length; i++) {
+        hash = ((hash << 5) - hash) + username.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+
+    function getPresencePlayers(state) {
+      return [...new Set(
+        Object.values(state)
+        .flatMap(presences => presences)
+        .map(presence => presence.username)
+        .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b));
+    }
+
+    function buildPlayerColorMap(state) {
+      const colors = new Map();
+      const usedSlots = new Set();
+
+      getPresencePlayers(state).forEach(username => {
+        let slot = hashUsername(username) % PLAYER_COLORS.length;
+        let attempts = 0;
+        while (usedSlots.has(slot) && attempts < PLAYER_COLORS.length) {
+          slot = (slot + 1) % PLAYER_COLORS.length;
+          attempts++;
+        }
+        usedSlots.add(slot);
+        colors.set(username, PLAYER_COLORS[slot]);
+      });
+
+      return colors;
+    }
+
+    async function syncPlayerColors() {
+      if (!mpChannel || !currentUser) return;
+      const nextColors = buildPlayerColorMap(mpChannel.presenceState());
+      playerColors = nextColors;
+
+      const assignedColor = nextColors.get(currentUser.username) || PLAYER_COLORS[0];
+      myColor = assignedColor;
+
+      peers.forEach((peer, username) => {
+        peer.color = nextColors.get(username) || peer.color || '#ccc';
+      });
+      gameplayLayerDirty = true;
+    }
+
     async function joinChannel(id, hosting) {
       roomId = id;
       isHost = hosting;
       multiplayerMode = true;
       peers.clear();
+      playerColors.clear();
       deadPlayers.clear();
 
       mpChannel = sb.channel('snake:room-' + id, {
@@ -848,7 +900,7 @@
       });
 
       mpChannel
-        .on('presence', { event: 'sync' }, updateLobbyList)
+        .on('presence', { event: 'sync' }, handlePresenceSync)
         .on('broadcast', { event: 'snake:state' }, ({ payload }) => updatePeer(payload))
         .on('broadcast', { event: 'game:start' }, () => startCountdown())
         .on('broadcast', { event: 'player:dead' }, ({ payload }) => {
@@ -859,34 +911,43 @@
         })
         .subscribe(async (status) => {
           if (status !== 'SUBSCRIBED') return;
-          const state = mpChannel.presenceState();
-          const count = Object.keys(state).length;
-          myColor = PLAYER_COLORS[count % PLAYER_COLORS.length];
+          myColor = PLAYER_COLORS[0];
           await mpChannel.track({ username: currentUser.username, color: myColor });
           showLobby();
         });
+    }
+
+    async function handlePresenceSync() {
+      await syncPlayerColors();
+      updateLobbyList();
     }
 
     function updateLobbyList() {
       const state = mpChannel.presenceState();
       const list  = document.getElementById('lobby-players');
       list.innerHTML = '';
-      Object.values(state).forEach(presences => {
-        presences.forEach(p => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span class="lobby-dot" style="background:${escHtml(p.color || '#fff')}"></span>${escHtml(p.username || '?')}`;
-          list.appendChild(li);
-        });
+      getPresencePlayers(state).forEach(username => {
+        const fallbackPresence = state[username]?.[0];
+        const color = playerColors.get(username) || fallbackPresence?.color || '#fff';
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="lobby-dot" style="background:${escHtml(color)}"></span>${escHtml(username)}`;
+        list.appendChild(li);
       });
     }
 
     function updatePeer(payload) {
       const existing = peers.get(payload.id) || {};
+      const nextSnake = (payload.snake || []).map(seg => ({ x: seg.x, y: seg.y }));
+      const previousSnake = existing.snake
+        ? existing.snake.map(seg => ({ x: seg.x, y: seg.y }))
+        : nextSnake.map(seg => ({ x: seg.x, y: seg.y }));
       peers.set(payload.id, {
-        snake: payload.snake,
+        snake: nextSnake,
+        prevSnake: previousSnake,
         score: payload.score,
-        color: payload.color,
+        color: playerColors.get(payload.id) || payload.color,
         dead:  existing.dead || false,
+        updatedAt: performance.now(),
       });
       gameplayLayerDirty = true;
     }
@@ -951,9 +1012,17 @@
     }
 
     function showMultiplayerEndScreen() {
-      const results = [{ username: currentUser.username, score, color: myColor }];
+      const results = [{
+        username: currentUser.username,
+        score,
+        color: playerColors.get(currentUser.username) || myColor,
+      }];
       peers.forEach((peer, username) => {
-        results.push({ username, score: peer.score || 0, color: peer.color || '#ccc' });
+        results.push({
+          username,
+          score: peer.score || 0,
+          color: playerColors.get(username) || peer.color || '#ccc',
+        });
       });
       results.sort((a, b) => b.score - a.score);
 
@@ -986,6 +1055,7 @@
       roomId = null;
       isHost = false;
       peers.clear();
+      playerColors.clear();
       deadPlayers.clear();
       showMpEntry();
     }
@@ -1652,23 +1722,30 @@
     }
 
     function drawPeerSnakes(targetCtx) {
-      peers.forEach(peer => {
+      const now = performance.now();
+      peers.forEach((peer, username) => {
         if (!peer.snake || peer.snake.length === 0) return;
         const alpha = peer.dead ? 0.25 : 1;
+        const peerColor = playerColors.get(username) || peer.color || '#ccc';
+        const elapsed = now - (peer.updatedAt || now);
+        const lerpFactor = peer.dead ? 1 : Math.min(elapsed / TICK, 1);
         peer.snake.forEach((seg, i) => {
-          const x = seg.x * CELL + 1, y = seg.y * CELL + 1, s = CELL - 2;
+          const prevSeg = peer.prevSnake?.[i] || seg;
+          const drawX = prevSeg.x + (seg.x - prevSeg.x) * lerpFactor;
+          const drawY = prevSeg.y + (seg.y - prevSeg.y) * lerpFactor;
+          const s = CELL - 2;
           const isHead = i === 0;
           targetCtx.globalAlpha = alpha;
           if (isHead) {
-            targetCtx.shadowColor = peer.color;
+            targetCtx.shadowColor = peerColor;
             targetCtx.shadowBlur  = 16;
-            targetCtx.fillStyle   = peer.color;
+            targetCtx.fillStyle   = peerColor;
           } else {
             targetCtx.shadowBlur = 0;
-            targetCtx.fillStyle  = hexToRgba(peer.color, 0.65 - (i / peer.snake.length) * 0.3);
+            targetCtx.fillStyle  = hexToRgba(peerColor, 0.65 - (i / peer.snake.length) * 0.3);
           }
           targetCtx.beginPath();
-          targetCtx.roundRect(x, y, s, s, isHead ? 5 : 3);
+          targetCtx.roundRect(drawX * CELL + 1, drawY * CELL + 1, s, s, isHead ? 5 : 3);
           targetCtx.fill();
         });
         targetCtx.shadowBlur  = 0;
