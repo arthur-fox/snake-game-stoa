@@ -19,13 +19,18 @@
       color: #fff;
     }
 
-    h1 {
-      font-size: 2rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #39ff14;
-      text-shadow: 0 0 12px #39ff1488;
+    /* ── Snake Title ── */
+    #snake-title {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
       margin-bottom: 12px;
+    }
+    #snake-title canvas {
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      image-rendering: pixelated;
     }
 
     /* ── Auth Modal ── */
@@ -543,7 +548,7 @@
     </div>
 
     <div id="game-col">
-      <h1>Snake</h1>
+      <div id="snake-title"></div>
       <div id="user-bar">
         <span>Playing as <strong id="username-display"></strong></span>
         <button id="logout-btn">Logout</button>
@@ -554,13 +559,20 @@
       <!-- Mode Selection -->
       <div id="mp-entry" style="display:none">
         <p class="mp-heading">Choose a mode to play</p>
+        <button class="mp-btn" onclick="startSolo()">Solo Game</button>
+        <button class="mp-btn secondary" onclick="showMpSub()">Multiplayer Game</button>
+        <button class="mp-btn secondary" onclick="startParty()">Party Mode</button>
+      </div>
+
+      <!-- Multiplayer Sub-Menu -->
+      <div id="mp-sub" style="display:none">
+        <p class="mp-heading">Join or create a room</p>
         <button class="mp-btn" onclick="createRoom()">Create Room</button>
         <div class="mp-join-row">
           <input id="room-input" placeholder="XXXXXX" maxlength="6">
           <button class="mp-btn" onclick="joinRoomFromInput()">Join</button>
         </div>
-        <button class="mp-btn secondary" onclick="startSolo()">Solo Game</button>
-        <button class="mp-btn secondary" onclick="startParty()">Party Mode</button>
+        <button class="mp-btn secondary" onclick="showMpEntry()">Back</button>
       </div>
 
       <!-- Lobby -->
@@ -789,6 +801,7 @@
     // ── Multiplayer UI Helpers ────────────────────────────────
     function showNothing() {
       document.getElementById('mp-entry').style.display    = 'none';
+      document.getElementById('mp-sub').style.display      = 'none';
       document.getElementById('mp-lobby').style.display    = 'none';
       document.getElementById('canvas-wrap').style.display = 'none';
       document.getElementById('score-display').style.display = 'none';
@@ -800,6 +813,11 @@
     function showMpEntry() {
       showNothing();
       document.getElementById('mp-entry').style.display = 'flex';
+    }
+
+    function showMpSub() {
+      showNothing();
+      document.getElementById('mp-sub').style.display = 'flex';
     }
 
     function showLobby() {
@@ -1939,6 +1957,45 @@
         this.closePath();
       };
     }
+
+    // ── Snake Title ───────────────────────────────────────────
+    // Each letter is a 5×7 pixel grid drawn as snake body segments
+    (function drawSnakeTitle() {
+      const LETTERS = {
+        S: ['01111','10000','10000','01110','00001','00001','11110'],
+        N: ['10001','11001','10101','10011','10001','10001','10001'],
+        A: ['01110','10001','10001','11111','10001','10001','10001'],
+        K: ['10001','10010','10100','11000','10100','10010','10001'],
+        E: ['11111','10000','10000','11110','10000','10000','11111'],
+      };
+      const COLORS = { S: '#39ff14', N: '#ff6b6b', A: '#4ecdc4', K: '#ffe66d', E: '#a78bfa' };
+      const CELL = 10, GAP = 2;
+      const W = 5 * CELL + 4 * GAP;
+      const H = 7 * CELL + 6 * GAP;
+      const container = document.getElementById('snake-title');
+
+      ['S','N','A','K','E'].forEach(letter => {
+        const c = document.createElement('canvas');
+        c.width = W; c.height = H;
+        const lctx = c.getContext('2d');
+        const color = COLORS[letter];
+        lctx.shadowColor = color;
+        lctx.shadowBlur  = 8;
+        lctx.fillStyle   = color;
+        LETTERS[letter].forEach((row, r) => {
+          [...row].forEach((bit, col) => {
+            if (bit === '1') {
+              const x = col * (CELL + GAP);
+              const y = r   * (CELL + GAP);
+              lctx.beginPath();
+              lctx.roundRect(x, y, CELL, CELL, 3);
+              lctx.fill();
+            }
+          });
+        });
+        container.appendChild(c);
+      });
+    })();
 
     // ── Boot ──────────────────────────────────────────────────
     bootAuth();
