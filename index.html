@@ -19,19 +19,19 @@
       color: #fff;
     }
 
+    /* ── Design Tokens ── */
+    :root {
+      --green:       #39ff14;
+      --green-glow:  #39ff1422;
+      --green-dim:   #39ff1444;
+      --panel-bg:    #0d0d1a;
+      --panel-border: 1px solid #2a2a3a;
+      --panel-shadow: 0 0 20px rgba(57,255,20,0.05);
+    }
+
     /* ── Snake Title ── */
-    #snake-title {
-      display: flex;
-      gap: 6px;
-      align-items: flex-end;
-      margin-bottom: 12px;
-    }
-    #snake-title canvas {
-      border: none;
-      box-shadow: none;
-      border-radius: 0;
-      image-rendering: pixelated;
-    }
+    #snake-title { display: flex; gap: 6px; align-items: flex-end; margin-bottom: 12px; }
+    #snake-title canvas { border: none; box-shadow: none; border-radius: 0; image-rendering: pixelated; }
 
     /* ── Auth Modal ── */
     #auth-modal {
@@ -137,41 +137,30 @@
     #user-bar span { font-size: 0.9rem; color: #aaa; }
     #user-bar strong { color: #39ff14; }
 
-    #logout-btn {
-      background: transparent;
-      border: 1px solid #333;
-      color: #888;
-      font-size: 0.8rem;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    #logout-btn:hover { color: #fff; border-color: #666; }
+    #logout-btn { font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; }
 
-    /* ── Legend Panel ── */
-    #legend-panel {
+    /* ── Side Panels (Legend + Leaderboard) ── */
+    .side-panel {
       width: 200px;
-      background: #0d0d1a;
-      border: 1px solid #2a2a3a;
+      background: var(--panel-bg);
+      border: var(--panel-border);
       border-radius: 8px;
       padding: 16px;
-      box-shadow: 0 0 20px rgba(57,255,20,0.05);
+      box-shadow: var(--panel-shadow);
       margin-top: 131px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
     }
+    #legend-panel { display: flex; flex-direction: column; gap: 20px; }
 
-    #legend-panel h3 {
+    .side-panel h3 {
       text-align: center;
       font-size: 0.85rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #39ff14;
+      color: var(--green);
       text-shadow: 0 0 8px #39ff1455;
       padding-bottom: 10px;
       border-bottom: 1px solid #1e1e2e;
+      margin-bottom: 4px;
     }
 
     .legend-item {
@@ -268,34 +257,25 @@
       box-shadow: 0 0 30px #39ff1422;
     }
 
+    .ghost-btn {
+      background: transparent;
+      border: 1px solid #333;
+      color: #888;
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .ghost-btn:hover { color: #fff; border-color: #666; }
+
     #hint {
       font-size: 0.8rem;
       color: #444;
       letter-spacing: 0.06em;
     }
 
-    /* ── Leaderboard Panel ── */
-    #lb-panel {
-      width: 200px;
-      background: #0d0d1a;
-      border: 1px solid #2a2a3a;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 0 20px rgba(57,255,20,0.05);
-      margin-top: 131px;
-    }
-
-    #lb-panel h3 {
-      text-align: center;
-      font-size: 0.85rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #39ff14;
-      text-shadow: 0 0 8px #39ff1455;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #1e1e2e;
-    }
+    /* #lb-panel styling inherited from .side-panel */
 
     #leaderboard-list {
       list-style: none;
@@ -351,7 +331,7 @@
     }
 
     /* ── Multiplayer UI ── */
-    #mp-entry, #mp-lobby {
+    #mp-entry, #mp-sub, #mp-lobby {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -522,7 +502,7 @@
 
   <div id="columns">
     <!-- Legend Panel -->
-    <div id="legend-panel">
+    <div id="legend-panel" class="side-panel">
       <h3>Power-Ups</h3>
       <div class="legend-item">
         <div class="legend-icon invincible"></div>
@@ -551,7 +531,7 @@
       <div id="snake-title"></div>
       <div id="user-bar">
         <span>Playing as <strong id="username-display"></strong></span>
-        <button id="logout-btn">Logout</button>
+        <button id="logout-btn" class="ghost-btn">Logout</button>
       </div>
       <div id="score-display" style="display:none">Score: <span id="score-val">0</span></div>
       <div id="level-display" style="display:none">Level <span id="level-val">1</span></div>
@@ -596,8 +576,9 @@
       </div>
 
       <div id="hint" style="display:none">Arrow keys to move</div>
+      <button id="back-btn" class="ghost-btn" style="display:none" onclick="backToMenu()">&#8592; Main Menu</button>
     </div>
-    <div id="lb-panel">
+    <div id="lb-panel" class="side-panel">
       <h3>Leaderboard</h3>
       <ul id="leaderboard-list">
         <li id="lb-status">Loading…</li>
@@ -808,6 +789,7 @@
       document.getElementById('level-display').style.display = 'none';
       document.getElementById('legend-panel').style.display  = 'none';
       document.getElementById('hint').style.display        = 'none';
+      document.getElementById('back-btn').style.display    = 'none';
     }
 
     function showMpEntry() {
@@ -818,6 +800,19 @@
     function showMpSub() {
       showNothing();
       document.getElementById('mp-sub').style.display = 'flex';
+    }
+
+    function backToMenu() {
+      stopGameLoop();
+      if (mpChannel) {
+        try { mpChannel.unsubscribe(); } catch(e) {}
+        mpChannel = null;
+      }
+      multiplayerMode = false;
+      partyMode       = false;
+      spectating      = false;
+      gameOver        = true;
+      showMpEntry();
     }
 
     function showLobby() {
@@ -836,6 +831,7 @@
       document.getElementById('level-display').style.display = partyMode ? '' : 'none';
       document.getElementById('legend-panel').style.display  = partyMode ? '' : 'none';
       document.getElementById('hint').style.display        = '';
+      document.getElementById('back-btn').style.display    = '';
     }
 
     // ── Multiplayer Channel ───────────────────────────────────
