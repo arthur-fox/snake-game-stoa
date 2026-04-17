@@ -2577,14 +2577,27 @@
         A: ['01110','10001','10001','11111','10001','10001','10001'],
         K: ['10001','10010','10100','11000','10100','10010','10001'],
         E: ['11111','10000','10000','11110','10000','10000','11111'],
+        B: ['11110','10001','10001','11110','10001','10001','11110'],
+        Y: ['10001','10001','01010','00100','00100','00100','00100'],
+        T: ['11111','00100','00100','00100','00100','00100','00100'],
+        O: ['01110','10001','10001','10001','10001','10001','01110'],
       };
-      const COLORS = { S: '#39ff14', N: '#ff6b6b', A: '#4ecdc4', K: '#ffe66d', E: '#a78bfa' };
-      const CELL = 10, GAP = 2;
+      const COLORS = {
+        S: '#39ff14', N: '#ff6b6b', A: '#4ecdc4', K: '#ffe66d', E: '#a78bfa',
+        B: '#ff9f43', Y: '#fd79a8', T: '#74b9ff', O: '#55efc4',
+      };
+      const CELL = 8, GAP = 2;
       const W = 5 * CELL + 4 * GAP;
       const H = 7 * CELL + 6 * GAP;
       const container = document.getElementById('snake-title');
 
-      ['S','N','A','K','E'].forEach(letter => {
+      ['S','N','A','K','E',' ','B','Y',' ','S','T','O','A'].forEach(letter => {
+        if (letter === ' ') {
+          const spacer = document.createElement('div');
+          spacer.style.width = '10px';
+          container.appendChild(spacer);
+          return;
+        }
         const c = document.createElement('canvas');
         c.width = W; c.height = H;
         const lctx = c.getContext('2d');
