@@ -159,6 +159,10 @@ function cloneSpecialItems(items = []) {
   return items.map((item) => ({ ...item }));
 }
 
+function cloneBoardSize(boardSize = getDefaultBoardSize()) {
+  return normalizeBoardSize(boardSize);
+}
+
 function getSpecialItemAtPosition(pos) {
   return specialItems.find((item) => item.x === pos.x && item.y === pos.y) || null;
 }
@@ -325,6 +329,14 @@ function getTrackedMatchPlayerIds() {
     .filter(Boolean);
 }
 
+function getCurrentMultiplayerParticipantCount() {
+  const presenceCount = mpChannel && typeof getPresencePlayers === 'function'
+    ? getPresencePlayers(mpChannel.presenceState()).length
+    : 0;
+  const fallbackCount = peers.size + (currentUser?.username ? 1 : 0);
+  return Math.max(1, currentMatchPlayers.length, presenceCount, fallbackCount);
+}
+
 function getCanonicalMatchPlayers() {
   const participants = new Map();
   const presenceState = mpChannel ? mpChannel.presenceState() : {};
@@ -471,10 +483,13 @@ function cloneFoods(foodItems = []) {
 function startCountdown(startPayload = null) {
   if (startPayload?.matchId) currentMatchId = startPayload.matchId;
   if (multiplayerMode) {
+    const playerCount = startPayload?.players?.length || getCurrentMultiplayerParticipantCount();
+    applyBoardSize(startPayload?.boardSize || getMultiplayerBoardSize(playerCount));
     setCurrentMatchPlayers(startPayload?.players?.length ? startPayload.players : getCanonicalMatchPlayers());
     pendingMatchFoods = startPayload?.foods ? cloneFoods(startPayload.foods) : null;
     matchStartAt = startPayload?.startsAt ?? (Date.now() + MATCH_COUNTDOWN_MS);
   } else {
+    resetBoardSize();
     setCurrentMatchPlayers([]);
     pendingMatchFoods = null;
     matchStartAt = null;
@@ -1332,11 +1347,13 @@ function prepareMatchStartPayload() {
   matchResults.clear();
   pendingGrowth = 0;
   pendingFoodClaims.clear();
+  const boardSize = applyBoardSize(getMultiplayerBoardSize(getCurrentMultiplayerParticipantCount()));
   setCurrentMatchPlayers(getCanonicalMatchPlayers());
   initializeCombatStateForMatch();
   pendingMatchFoods = refillFoods([]);
   return {
     matchId: currentMatchId,
+    boardSize: cloneBoardSize(boardSize),
     players: cloneMatchPlayers(currentMatchPlayers),
     foods: cloneFoods(pendingMatchFoods),
     startsAt: matchStartAt,

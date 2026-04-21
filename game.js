@@ -116,6 +116,7 @@
       multiplayerMode = false;
       partyMode = false;
       roomStage = 'browse';
+      resetBoardSize();
       clearCurrentMatchSnapshot();
       matchResults.clear();
       resetCombatState();
@@ -132,6 +133,7 @@
       multiplayerMode = false;
       partyMode = true;
       roomStage = 'browse';
+      resetBoardSize();
       clearCurrentMatchSnapshot();
       matchResults.clear();
       resetCombatState();
@@ -150,8 +152,13 @@
     const scoreEl = document.getElementById('score-val');
 
     const CELL = 20;
-    const COLS = canvas.width  / CELL;
-    const ROWS = canvas.height / CELL;
+    const DEFAULT_BOARD_COLS = canvas.width / CELL;
+    const DEFAULT_BOARD_ROWS = canvas.height / CELL;
+    const MULTIPLAYER_BOARD_BASE_CELLS = 30;
+    const MULTIPLAYER_BOARD_CELLS_PER_EXTRA_PLAYER = 4;
+    const MULTIPLAYER_BOARD_MAX_CELLS = 42;
+    let COLS = DEFAULT_BOARD_COLS;
+    let ROWS = DEFAULT_BOARD_ROWS;
     const TICK = 130;
     const MAX_INPUT_QUEUE = 2;
     const BACKGROUND_REFRESH_MS = 100;
@@ -171,6 +178,78 @@
     let gameplayCanvas, gameplayCtx, gameplayLayerDirty;
     let gridCanvas, gridCtx;
     let renderRaf;
+
+    function getDefaultBoardSize() {
+      return {
+        cols: DEFAULT_BOARD_COLS,
+        rows: DEFAULT_BOARD_ROWS,
+        cell: CELL,
+        width: DEFAULT_BOARD_COLS * CELL,
+        height: DEFAULT_BOARD_ROWS * CELL,
+      };
+    }
+
+    function normalizeBoardSize(boardSize = getDefaultBoardSize()) {
+      const fallback = getDefaultBoardSize();
+      const cell = CELL;
+      const cols = Math.max(1, Math.round(Number(boardSize.cols) || fallback.cols));
+      const rows = Math.max(1, Math.round(Number(boardSize.rows) || fallback.rows));
+      return {
+        cols,
+        rows,
+        cell,
+        width: cols * cell,
+        height: rows * cell,
+      };
+    }
+
+    function getMultiplayerBoardSize(playerCount = 2) {
+      const extraPlayers = Math.max(0, Math.ceil(Number(playerCount) || 2) - 2);
+      const cells = Math.min(
+        MULTIPLAYER_BOARD_MAX_CELLS,
+        MULTIPLAYER_BOARD_BASE_CELLS + extraPlayers * MULTIPLAYER_BOARD_CELLS_PER_EXTRA_PLAYER
+      );
+      return normalizeBoardSize({ cols: cells, rows: cells });
+    }
+
+    function invalidateBoardCaches() {
+      gridCanvas = null;
+      gridCtx = null;
+      gameplayCanvas = null;
+      gameplayCtx = null;
+      backgroundCanvas = null;
+      backgroundCtx = null;
+      gameplayLayerDirty = true;
+    }
+
+    function applyBoardSize(boardSize = getDefaultBoardSize()) {
+      const nextSize = normalizeBoardSize(boardSize);
+      const sizeChanged = canvas.width !== nextSize.width || canvas.height !== nextSize.height;
+
+      COLS = nextSize.cols;
+      ROWS = nextSize.rows;
+
+      if (sizeChanged) {
+        canvas.width = nextSize.width;
+        canvas.height = nextSize.height;
+      }
+
+      const wrapEl = document.getElementById('canvas-wrap');
+      if (wrapEl) {
+        wrapEl.style.width = `${nextSize.width}px`;
+        wrapEl.style.height = `${nextSize.height}px`;
+      }
+
+      if (sizeChanged) {
+        invalidateBoardCaches();
+      }
+
+      return nextSize;
+    }
+
+    function resetBoardSize() {
+      return applyBoardSize(getDefaultBoardSize());
+    }
 
     // ── Power-Up State ────────────────────────────────────────
     const POWERUP_TYPES       = ['INVINCIBLE', 'ROTTEN', 'BLUE_APPLE'];
@@ -336,6 +415,7 @@
       partyMode = false;
       multiplayerMode = false;
       roomStage = 'browse';
+      resetBoardSize();
       clearCurrentMatchSnapshot();
       matchResults.clear();
       resetCombatState();
@@ -736,21 +816,32 @@
     function buildGameplayLayerCache() {
       if (!gameplayCanvas) {
         gameplayCanvas = document.createElement('canvas');
+        gameplayCtx = gameplayCanvas.getContext('2d');
+      }
+      if (gameplayCanvas.width !== canvas.width || gameplayCanvas.height !== canvas.height) {
         gameplayCanvas.width = canvas.width;
         gameplayCanvas.height = canvas.height;
-        gameplayCtx = gameplayCanvas.getContext('2d');
       }
       gameplayLayerDirty = true;
     }
 
     function buildBackgroundCache(force = false) {
-      if (!force && backgroundCanvas) return;  // static — only build once
+      if (
+        !force &&
+        backgroundCanvas &&
+        backgroundCanvas.width === canvas.width &&
+        backgroundCanvas.height === canvas.height
+      ) {
+        return;  // static — only build once per board size
+      }
 
       if (!backgroundCanvas) {
         backgroundCanvas = document.createElement('canvas');
+        backgroundCtx = backgroundCanvas.getContext('2d');
+      }
+      if (backgroundCanvas.width !== canvas.width || backgroundCanvas.height !== canvas.height) {
         backgroundCanvas.width = canvas.width;
         backgroundCanvas.height = canvas.height;
-        backgroundCtx = backgroundCanvas.getContext('2d');
       }
 
       backgroundCtx.fillStyle = '#0f0820';

@@ -1582,6 +1582,7 @@ async function leaveRoom() {
   roomId = null;
   roomStage = 'browse';
   isHost = false;
+  resetBoardSize();
   if (typeof clearCurrentLobbyRoomState === 'function') {
     clearCurrentLobbyRoomState();
   }
