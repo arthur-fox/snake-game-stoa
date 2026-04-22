@@ -47,11 +47,15 @@
       const nextColors = buildPlayerColorMap(mpChannel.presenceState());
       playerColors = nextColors;
 
+      const previousColor = myColor;
       myColor = nextColors.get(currentUser.username) || PLAYER_COLORS[0];
 
       peers.forEach((peer, username) => {
         peer.color = nextColors.get(username) || peer.color || '#ccc';
       });
+      if (myColor !== previousColor && typeof syncRoomPresence === 'function') {
+        await syncRoomPresence();
+      }
       gameplayLayerDirty = true;
     }
 

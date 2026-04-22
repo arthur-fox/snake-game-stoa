@@ -335,14 +335,14 @@ function getCanonicalMatchPlayers() {
     if (!username) return;
     participants.set(username, {
       username,
-      color: latestPresence.color || null,
+      color: playerColors.get(username) || latestPresence.color || null,
     });
   });
 
   if (currentUser?.username && !participants.has(currentUser.username)) {
     participants.set(currentUser.username, {
       username: currentUser.username,
-      color: myColor,
+      color: playerColors.get(currentUser.username) || myColor,
     });
   }
 
@@ -365,8 +365,13 @@ function seedPeersFromMatchPlayers() {
     }
 
     const existing = peers.get(player.username) || {};
+    const spawnSnake = player.spawn?.head && player.spawn?.dir
+      ? buildSpawnSnake(player.spawn.head, player.spawn.dir)
+      : null;
+    const nextSnake = existing.snake || spawnSnake;
     nextPeers.set(player.username, {
-      snake: existing.snake,
+      snake: nextSnake,
+      prevSnake: existing.prevSnake || (nextSnake ? cloneSnakeSegments(nextSnake) : undefined),
       score: existing.score || 0,
       color: player.color || existing.color || '#ccc',
       dead: existing.dead || false,
@@ -468,6 +473,82 @@ function cloneFoods(foodItems = []) {
   return foodItems.map((foodItem) => ({ ...foodItem }));
 }
 
+function getCountdownPreviewPlayers() {
+  const playersByUsername = new Map();
+
+  cloneMatchPlayers(currentMatchPlayers).forEach((player) => {
+    playersByUsername.set(player.username, player);
+  });
+
+  if (multiplayerMode) {
+    getCanonicalMatchPlayers().forEach((player) => {
+      if (!playersByUsername.has(player.username)) {
+        playersByUsername.set(player.username, player);
+      }
+    });
+  }
+
+  return Array.from(playersByUsername.values());
+}
+
+function drawGreyCountdownSnake(targetCtx, snakeSegments) {
+  snakeSegments.forEach((seg, index) => {
+    const x = seg.x * CELL + 1;
+    const y = seg.y * CELL + 1;
+    const size = CELL - 2;
+    const isHead = index === 0;
+    const alpha = isHead ? 0.74 : Math.max(0.42, 0.62 - index * 0.08);
+
+    targetCtx.shadowColor = 'rgba(230,235,240,0.44)';
+    targetCtx.shadowBlur = isHead ? 12 : 0;
+    targetCtx.fillStyle = `rgba(188,195,202,${alpha})`;
+    targetCtx.beginPath();
+    targetCtx.roundRect(x, y, size, size, isHead ? 5 : 3);
+    targetCtx.fill();
+  });
+  targetCtx.shadowBlur = 0;
+}
+
+function drawCountdownPreviewEyes(targetCtx, head, direction) {
+  if (!head || !direction) return;
+  targetCtx.fillStyle = '#111';
+  getEyePositions(head.x * CELL, head.y * CELL, direction, 5).forEach(([eyeX, eyeY]) => {
+    targetCtx.beginPath();
+    targetCtx.arc(eyeX, eyeY, 2.5, 0, Math.PI * 2);
+    targetCtx.fill();
+  });
+}
+
+function drawCountdownSpawnPreview(targetCtx) {
+  if (!multiplayerMode || !currentMatchPlayers.length || !currentUser?.username) return;
+
+  const players = getCountdownPreviewPlayers()
+    .filter((player) => player.spawn?.head && player.spawn?.dir)
+    .sort((a, b) => {
+      if (a.username === currentUser.username) return 1;
+      if (b.username === currentUser.username) return -1;
+      return a.username.localeCompare(b.username);
+    });
+
+  players.forEach((player) => {
+    const isLocalPlayer = player.username === currentUser.username;
+    const previewSnake = buildSpawnSnake(player.spawn.head, player.spawn.dir);
+
+    targetCtx.save();
+    if (isLocalPlayer) {
+      drawSnakeSegments(targetCtx, previewSnake, {
+        color: myColor,
+        multiplayer: true,
+        playerId: player.username,
+      });
+      drawCountdownPreviewEyes(targetCtx, player.spawn.head, player.spawn.dir);
+    } else {
+      drawGreyCountdownSnake(targetCtx, previewSnake);
+    }
+    targetCtx.restore();
+  });
+}
+
 function startCountdown(startPayload = null) {
   if (startPayload?.matchId) currentMatchId = startPayload.matchId;
   if (multiplayerMode) {
@@ -514,8 +595,12 @@ function startCountdown(startPayload = null) {
   function drawCount(n) {
     buildBackgroundCache(true);
     ctx.drawImage(backgroundCanvas, 0, 0);
+    if (multiplayerMode) {
+      drawStaticGridLayer();
+    }
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawCountdownSpawnPreview(ctx);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = 'bold 120px system-ui';
@@ -1259,6 +1344,9 @@ function resolveDeathClaim(payload) {
 
   broadcastResolvedDeath(buildResolvedDeathPayload(payload.id, payload));
 
+  const isHeadOnClaim = payload.reason === 'peer-head' || payload.reason === 'head-on';
+  if (!isHeadOnClaim) return;
+
   const counterpartId = getHeadOnCounterpartId(payload.id, payload.head);
   if (!counterpartId) return;
 
@@ -1356,25 +1444,43 @@ function broadcastSnakeState() {
   });
 }
 
-function checkAllDead() {
+function checkMatchEnded() {
   const matchPlayerIds = getTrackedMatchPlayerIds();
   if (!matchPlayerIds.length) return;
 
-  const allResolved = matchPlayerIds.every((playerId) => deadPlayers.has(playerId));
-  if (allResolved) {
-    spectating = false;
-    roomStage = 'ended';
-    syncLobbyPresence();
-    if (typeof syncLobbyRoomState === 'function') {
-      void syncLobbyRoomState({
-        force: true,
-        eventName: 'room:close',
-        reason: 'match-ended',
-      });
-    }
-    stopRenderer();
-    showMultiplayerEndScreen();
+  const alivePlayerIds = matchPlayerIds.filter((playerId) => !deadPlayers.has(playerId));
+  if (alivePlayerIds.length > 1) return;
+
+  const resolvedAt = Date.now();
+  const survivalMs = Math.max(0, resolvedAt - (matchStartAt || resolvedAt));
+  alivePlayerIds.forEach((playerId) => {
+    const isCurrentPlayer = playerId === currentUser?.username;
+    const peer = isCurrentPlayer ? null : peers.get(playerId);
+    matchResults.set(playerId, {
+      score: isCurrentPlayer ? score : (peer?.score || 0),
+      survivalMs,
+      resolvedAt,
+    });
+    if (peer) peer.survivalMs = survivalMs;
+  });
+
+  spectating = false;
+  roomStage = 'ended';
+  syncLobbyPresence();
+  if (typeof syncLobbyRoomState === 'function') {
+    void syncLobbyRoomState({
+      force: true,
+      eventName: 'room:close',
+      reason: 'match-ended',
+    });
   }
+  stopSimulation();
+  stopRenderer();
+  showMultiplayerEndScreen();
+}
+
+function checkAllDead() {
+  checkMatchEnded();
 }
 
 function formatSurvivalTime(ms = 0) {
