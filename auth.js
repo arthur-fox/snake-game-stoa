@@ -88,7 +88,7 @@
         id:       data.user.id,
         username: data.user.user_metadata?.username || username,
       };
-      await showGame();
+      startAuthTransitionAnimation(() => showGame());
     }
 
     function getGuestUsername() {
@@ -106,9 +106,9 @@
       }
     }
 
-    async function playAsGuest() {
+    function playAsGuest() {
       currentUser = { id: null, username: getGuestUsername() };
-      await showGame();
+      startAuthTransitionAnimation(() => showGame());
     }
 
     async function showGame() {
