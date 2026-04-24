@@ -506,9 +506,11 @@ function startCountdown(startPayload = null) {
     });
   }
   showCanvas();
+  if (typeof syncLeaderboardToGameMode === 'function') syncLeaderboardToGameMode();
   peers.clear();
   seedPeersFromMatchPlayers();
   deadPlayers.clear();
+  if (multiplayerMode) renderMultiplayerHud(true);
   let count = 3;
 
   function drawCount(n) {
@@ -525,6 +527,7 @@ function startCountdown(startPayload = null) {
     ctx.fillText(n > 0 ? String(n) : 'GO!', canvas.width / 2, canvas.height / 2);
     ctx.shadowBlur = 0;
     ctx.textBaseline = 'alphabetic';
+    if (multiplayerMode) renderMultiplayerHud();
   }
 
   drawCount(count);
@@ -1384,14 +1387,27 @@ function formatSurvivalTime(ms = 0) {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
+function syncMultiplayerSidePanelLayout() {
+  const columnsEl = document.getElementById('columns');
+  const hudEl = document.getElementById('mp-game-hud');
+  if (!columnsEl || !hudEl) return;
+
+  const hudVisible = getComputedStyle(hudEl).display !== 'none';
+  const hudHeight = hudVisible ? Math.ceil(hudEl.getBoundingClientRect().height) : 0;
+  columnsEl.style.setProperty('--mp-hud-stack-height', `${hudHeight}px`);
+}
+
 function resetMultiplayerHud() {
   const hudEl = document.getElementById('mp-game-hud');
+  const legendEl = document.getElementById('mp-legend-panel');
   const listEl = document.getElementById('mp-game-players');
   const timeEl = document.getElementById('mp-match-time');
   if (hudEl) hudEl.style.display = 'none';
+  if (legendEl) legendEl.style.display = 'none';
   if (listEl) listEl.innerHTML = '';
   if (timeEl) timeEl.textContent = '0:00';
   lastMultiplayerHudKey = '';
+  syncMultiplayerSidePanelLayout();
 }
 
 function getCurrentMatchElapsedMs() {
@@ -1427,7 +1443,7 @@ function renderMultiplayerHud(force = false) {
   const timeEl = document.getElementById('mp-match-time');
   if (!hudEl || !listEl || !timeEl) return;
 
-  const visible = multiplayerMode && roomStage === 'playing';
+  const visible = multiplayerMode && (roomStage === 'playing' || countdownActive);
   if (!visible) {
     resetMultiplayerHud();
     return;
@@ -1449,6 +1465,7 @@ function renderMultiplayerHud(force = false) {
 
   if (!force && snapshotKey === lastMultiplayerHudKey) {
     hudEl.style.display = 'flex';
+    syncMultiplayerSidePanelLayout();
     return;
   }
 
@@ -1473,6 +1490,7 @@ function renderMultiplayerHud(force = false) {
     `;
     listEl.appendChild(li);
   });
+  syncMultiplayerSidePanelLayout();
 }
 
 function getPlacementLabel(rank) {

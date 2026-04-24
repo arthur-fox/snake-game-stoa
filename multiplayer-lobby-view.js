@@ -56,6 +56,8 @@ function renderLobbyUiState() {
   ) {
     document.getElementById('mp-entry').style.display = 'flex';
     setSoloLeaderboardVisible(true);
+    if (typeof setLeaderboardMode === 'function') setLeaderboardMode('multiplayer');
+    if (typeof fetchLeaderboard === 'function') fetchLeaderboard('multiplayer');
     renderAvailableRooms();
     return;
   }
