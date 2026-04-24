@@ -168,8 +168,32 @@
       --menu-glow-opacity: 0.78;
     }
 
+    /* ── Scene background (day image → night/dusk) ── */
+    #scene-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: url('stoa image.png') left center / cover no-repeat;
+      /* Step 1: dim + desaturate the daytime image */
+      filter: brightness(0.32) saturate(0.55);
+    }
+    /* Step 2: cool blue moonlight wash on top */
+    #scene-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(15, 30, 80,  0.72) 0%,
+        rgba(8,  20, 55,  0.60) 45%,
+        rgba(5,  18, 45,  0.55) 100%
+      );
+      mix-blend-mode: screen;
+    }
+
     body {
-      background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d1b3e 50%, #0a2a1f 100%);
+      background: transparent;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -611,12 +635,13 @@
       left: calc(100% + 24px);
       top: calc(2.2rem * 1.2 + 22px);
       width: 200px;
-      background: rgba(13, 13, 26, 0.93);
-      border: 2px solid #000;
+      background: rgba(6, 10, 18, 0.62);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
       padding: 16px;
-      box-shadow: none;
-      backdrop-filter: blur(3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     #lb-panel h3 {
@@ -694,12 +719,13 @@
       gap: 18px;
       width: 600px;
       min-height: 300px;
-      background: rgba(13, 13, 26, 0.93);
-      border: 2px solid #000;
+      background: rgba(6, 10, 18, 0.62);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
       padding: 44px 32px;
-      box-shadow: none;
-      backdrop-filter: blur(3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       justify-content: center;
     }
 
@@ -759,9 +785,9 @@
 
     .mp-mode-panel {
       width: 100%;
-      border: 1px solid #2a2a3a;
+      border: 1px solid rgba(255,255,255,0.10);
       border-radius: 10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      background: rgba(255,255,255,0.04);
       padding: 18px 18px 16px;
       display: flex;
       flex-direction: column;
@@ -770,8 +796,8 @@
     }
 
     .mp-mode-panel.solo {
-      background: linear-gradient(180deg, rgba(57,255,20,0.04), rgba(57,255,20,0.015));
-      border-color: #39ff1426;
+      background: rgba(57,255,20,0.04);
+      border-color: rgba(57,255,20,0.18);
       align-items: center;
     }
 

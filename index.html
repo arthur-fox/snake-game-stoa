@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stoic Snake</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=10">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
+  <!-- Background image — filtered to night/dusk/moonlit -->
+  <div id="scene-bg" style="position:fixed;inset:0;z-index:-1;pointer-events:none;background:url('stoa image.png') left center / cover no-repeat;filter:brightness(0.32) saturate(0.55);"></div>
+  <div id="scene-bg-tint" style="position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(160deg,rgba(15,30,80,0.72),rgba(5,18,45,0.55));"></div>
 
   <!-- Splash Screen -->
   <div id="splash">
