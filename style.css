@@ -180,6 +180,18 @@
       gap: 20px;
     }
 
+    #columns:has(#game-col.gameplay-active) #mp-legend-panel {
+      right: calc(100% + 268px);
+      top: calc(2.2rem * 1.2 + 22px);
+    }
+
+    @media (max-width: 1700px) {
+      #columns:has(#game-col.gameplay-active) #mp-legend-panel {
+        right: calc(100% + 24px);
+        top: calc(2.2rem * 1.2 + 22px + var(--mp-hud-stack-height, 0px) + 24px);
+      }
+    }
+
     #legend-panel h3,
     #mp-legend-panel h3 {
       text-align: center;
@@ -251,6 +263,13 @@
       align-items: flex-start;
       width: fit-content;
       z-index: 1;
+      --leaderboard-menu-height: 604px;
+      --leaderboard-game-height: 600px;
+      --leaderboard-max-height: var(--leaderboard-menu-height);
+    }
+
+    #columns:has(#game-col.gameplay-active) {
+      --leaderboard-max-height: var(--leaderboard-game-height);
     }
 
     #game-col {
@@ -320,16 +339,16 @@
 
     #mp-game-hud {
       position: absolute;
-      left: calc(100% + 24px);
-      top: 131px;
+      right: calc(100% + 24px);
+      top: calc(2.2rem * 1.2 + 22px);
       width: 220px;
       display: none;
       flex-direction: column;
       gap: 8px;
       padding: 12px 14px;
-      background: rgba(8, 12, 18, 0.78);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
+      background: rgba(13, 13, 26, 0.93);
+      border: 2px solid #000;
+      border-radius: 8px;
     }
 
     .mp-game-hud-head {
@@ -449,16 +468,23 @@
       isolation: isolate;
       left: calc(100% + 24px);
       top: calc(2.2rem * 1.2 + 22px);
-      width: 200px;
+      width: 280px;
+      height: var(--leaderboard-max-height, auto);
+      max-height: var(--leaderboard-max-height, 600px);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       background: rgba(13, 13, 26, 0.93);
       border: 2px solid #000;
       border-radius: 8px;
       padding: 16px;
       box-shadow: none;
       backdrop-filter: blur(3px);
+      overflow: hidden;
     }
 
     #lb-panel h3 {
+      flex: 0 0 auto;
       text-align: center;
       font-size: 0.85rem;
       letter-spacing: 0.12em;
@@ -470,11 +496,80 @@
       border-bottom: 1px solid #1e1e2e;
     }
 
+    #leaderboard-tabs {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 4px;
+      padding-right: 8px;
+      margin-bottom: 12px;
+    }
+
+    #leaderboard-tabs .lb-tab {
+      flex: 0 0 auto;
+      border: 1px solid rgba(57,255,20,0.22);
+      border-radius: 5px;
+      padding: 6px 4px;
+      background: rgba(0,0,0,0.28);
+      color: rgba(255,255,255,0.62);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    #leaderboard-tabs .lb-tab[data-mode="multiplayer"] {
+      flex-basis: 132px;
+      width: 132px;
+      max-width: 132px;
+    }
+
+    #leaderboard-tabs .lb-tab[data-mode="solo"] {
+      flex-basis: 54px;
+      width: 54px;
+      max-width: 54px;
+    }
+
+    #leaderboard-tabs .lb-tab[data-mode="party"] {
+      flex-basis: 62px;
+      width: 62px;
+      max-width: 62px;
+    }
+
+    .lb-tab.active {
+      background: rgba(57,255,20,0.16);
+      color: #39ff14;
+      border-color: rgba(57,255,20,0.55);
+      text-shadow: 0 0 7px rgba(57,255,20,0.38);
+    }
+
     #leaderboard-list {
       list-style: none;
       display: flex;
       flex-direction: column;
+      flex: 1 1 auto;
       gap: 6px;
+      min-height: 0;
+      max-height: var(--leaderboard-list-max-height, none);
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding-right: 2px;
+      scrollbar-color: rgba(57,255,20,0.38) rgba(0,0,0,0.2);
+      scrollbar-width: thin;
+    }
+
+    #leaderboard-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #leaderboard-list::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 999px;
+    }
+
+    #leaderboard-list::-webkit-scrollbar-thumb {
+      background: rgba(57,255,20,0.35);
+      border-radius: 999px;
     }
 
     #leaderboard-list li {
@@ -489,6 +584,27 @@
     #leaderboard-list li.me {
       background: #39ff1415;
       border: 1px solid #39ff1433;
+    }
+
+    #leaderboard-list li.top-three {
+      padding: 7px 7px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    #leaderboard-list li.rank-1 {
+      background: rgba(255,215,0,0.12);
+      border-color: rgba(255,215,0,0.34);
+    }
+
+    #leaderboard-list li.rank-2 {
+      background: rgba(210,220,235,0.10);
+      border-color: rgba(210,220,235,0.28);
+    }
+
+    #leaderboard-list li.rank-3 {
+      background: rgba(205,127,50,0.10);
+      border-color: rgba(205,127,50,0.28);
     }
 
     .lb-rank {
@@ -514,6 +630,27 @@
       font-weight: bold;
       font-size: 0.78rem;
       flex-shrink: 0;
+    }
+
+    #leaderboard-page-btn {
+      flex: 0 0 auto;
+      width: 100%;
+      margin-top: 12px;
+      border: 1px solid rgba(57,255,20,0.26);
+      border-radius: 5px;
+      padding: 7px 8px;
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.75);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    #leaderboard-page-btn:disabled {
+      cursor: default;
+      opacity: 0.45;
     }
 
     #lb-status {

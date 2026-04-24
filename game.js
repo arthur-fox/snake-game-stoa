@@ -73,6 +73,8 @@
       document.getElementById('level-display').style.display = partyMode ? '' : 'none';
       document.getElementById('legend-panel').style.display  = partyMode ? '' : 'none';
       document.getElementById('mp-legend-panel').style.display = multiplayerMode && isShootingEnabled() ? '' : 'none';
+      document.getElementById('mp-game-hud').style.display = multiplayerMode ? 'flex' : 'none';
+      setSoloLeaderboardVisible(true);
       document.getElementById('hint').style.display        = '';
       updateGameplayHint();
       focusGameplaySurface();
@@ -125,6 +127,7 @@
       resetRoomSettings();
       syncLobbyPresence();
       setSoloLeaderboardVisible(true);
+      if (typeof syncLeaderboardToGameMode === 'function') syncLeaderboardToGameMode();
       startCountdown();
     }
 
@@ -141,6 +144,7 @@
       resetRoomSettings();
       syncLobbyPresence();
       setSoloLeaderboardVisible(true);
+      if (typeof syncLeaderboardToGameMode === 'function') syncLeaderboardToGameMode();
       startCountdown();
     }
 
@@ -354,6 +358,12 @@
       document.getElementById('mp-entry').style.display = 'flex';
       document.getElementById('game-col').classList.remove('gameplay-active');
       setSoloLeaderboardVisible(true);
+      if (typeof setLeaderboardMode === 'function') {
+        setLeaderboardMode('multiplayer');
+      }
+      if (typeof fetchLeaderboard === 'function') {
+        fetchLeaderboard('multiplayer');
+      }
       if (typeof setLobbyBrowseNotice === 'function') {
         setLobbyBrowseNotice('');
       }
@@ -1153,9 +1163,8 @@
       // Solo game over
       stopGameLoop();
       renderFrame();
-      await submitScore(score);
-
       document.getElementById('solo-end-overlay').style.display = 'flex';
+      void submitScore(score, { refreshLeaderboard: false });
     }
 
     // ── Input ─────────────────────────────────────────────────
