@@ -244,6 +244,11 @@
         wrapEl.style.height = `${nextSize.height}px`;
       }
 
+      const gameColEl = document.getElementById('game-col');
+      if (gameColEl) {
+        gameColEl.style.width = `${nextSize.width + 4}px`;
+      }
+
       if (sizeChanged) {
         invalidateBoardCaches();
       }
